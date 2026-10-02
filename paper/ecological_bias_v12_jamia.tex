@@ -41,17 +41,17 @@ Email: \texttt{elliot@elliottower.ai}}
 Federated networks share either site-level rates or coefficients from
 site-level models, and treat these as interchangeable.  A regression
 across site rates absorbs every between-site difference that tracks the
-regressor, so it need not recover the association a coefficient
-estimates within sites.  We tested whether the two agree.
+regressor, so it need not recover the within-site association a
+coefficient estimates.  We tested whether the two agree.
 
 \noindent\textbf{Materials and Methods:}
 We analyzed 3\,993\,464 confirmed COVID-19 case records from Mexico's
-surveillance system in 32 treating-unit states.  The observed
+surveillance system, 32 treating-unit states.  The observed
 ecological slope regressed state case fatality on the share aged 70 or
 older.  The model-implied slope averaged individual-level logistic
-predictions within each state and regressed those on the same share;
-their difference is the ecological discrepancy.  We varied the
-individual-level model across six prespecified specifications, and the
+predictions within each state and regressed those on the same share.
+Their difference is the ecological discrepancy.  We varied the
+individual-level model across six prespecified specifications and the
 site definition across residence state, sector, municipality, and a
 random partition holding each state's size and elderly count fixed.
 
@@ -62,7 +62,7 @@ fatality per point of elderly share (difference 0.86; bootstrap 95\% CI
 0.50--1.30).  The difference fell as adjustment increased but remained
 0.59 (0.21--1.07) under the richest specification.  On matched records it
 was 0.47 across municipalities against 1.01 across their states of
-residence, and 0.00 under the random partition.  Aligned one-stage and two-stage estimators
+residence, and 0.00 under the random partition, by construction.  Aligned one-stage and two-stage estimators
 agreed to 0.0007 in the log odds ratio.
 
 \noindent\textbf{Discussion:}
@@ -71,7 +71,7 @@ and does not identify a contextual effect.
 
 \noindent\textbf{Conclusion:}
 Networks sharing rates should name the individual-level model their inference
-assumes, and share per-site coefficients when an individual-level
+assumes, and share coefficients where an individual-level
 association is the target.
 \end{abstract}
 
@@ -115,8 +115,7 @@ patient-level truth.
 
 What a network shares is not one choice but several, and they do not
 preserve the same thing.  A network may share site-level rates and
-prevalences, or coefficients from a model each site fits locally, or the
-score and information a distributed likelihood needs.  These are
+prevalences, or coefficients from a model each site fits locally.  These are
 routinely treated as interchangeable summaries of the same underlying
 association.  They are not: a regression across site rates estimates a
 relationship between site-level quantities, while a coefficient
@@ -190,11 +189,11 @@ fatality per point of elderly share at the mean.}
 
 Sharing coefficients instead reproduces the record-level association
 (Table~\ref{tab:estimators}).  Estimators separate by the quantity they
-target rather than by whether the fit is one-stage or two-stage: the
-four common-effect specifications fall between odds ratios $11.26$ and
-$11.28$, the four random-effects specifications between $11.73$ and
-$11.74$, and aligned pairs agree to $0.00015$ and $0.00068$ in the log
-odds ratio.  Heterogeneity is preserved rather than hidden: per-state
+target rather than by whether the fit is one-stage or two-stage: four
+common-effect specifications fall between odds ratios $11.26$ and
+$11.28$ and three random-effects specifications between $11.73$ and
+$11.74$, while the two aligned pairs differ by $0.00015$ and $0.00068$
+in the log odds ratio.  Heterogeneity is preserved rather than hidden: per-state
 odds ratios run from $7.99$ to $18.09$, $I^2 = 97.4\%$, with a
 prediction interval of $8.43$ to $16.32$.
 
@@ -203,8 +202,8 @@ prediction interval of $8.43$ to $16.32$.
 \caption{Estimators of the record-level association between age 70 or
 older and death, Mexico, 3\,993\,464 records in 32 treating-unit states.
 Specifications are grouped by the quantity they target.  Within each
-group, one-stage and two-stage fits agree to the fourth decimal of the
-log odds ratio; between groups they differ by 4.2\%, which is the
+group, the one-stage and two-stage fits differ by less than $0.0007$ in
+the log odds ratio; between groups they differ by 4.2\%, which is the
 common-effect against random-effects choice and not the one-stage
 against two-stage one.}
 \label{tab:estimators}
@@ -254,8 +253,8 @@ Record-level model & Implied & Difference & 95\% CI \\
 Age 70+                                   & 0.332 & 0.979 & 0.605--1.458 \\
 \;\;+ sex, any comorbidity \emph{(registered)} & 0.454 & 0.857 & 0.496--1.303 \\
 \;\;+ nine comorbidities separately       & 0.495 & 0.816 & 0.478--1.243 \\
-Age in ten-year bands                     & 0.650 & 0.661 & 0.269--1.148 \\
-Age as a restricted cubic spline          & 0.655 & 0.656 & 0.260--1.149 \\
+\;\;age in ten-year bands instead           & 0.650 & 0.661 & 0.269--1.148 \\
+\;\;age as a restricted cubic spline instead & 0.655 & 0.656 & 0.260--1.149 \\
 \;\;+ calendar month of onset             & 0.716 & 0.594 & 0.212--1.070 \\
 \bottomrule
 \end{tabular}
@@ -319,8 +318,9 @@ random-intercept model over 152\,919 cells by adaptive Gauss--Hermite
 quadrature at 15 nodes, leaves an odds ratio of $1.1817$ per standard
 deviation (profile-likelihood interval $1.0719$ to $1.3027$) with a
 random-intercept standard deviation of $0.2682$.  The fit meets all
-eleven numerical acceptance criteria fixed before it was run, and an
-independent reimplementation reproduces its coefficients to
+eleven numerical acceptance criteria fixed before it was run, and a
+second implementation of the same quadrature, written separately and
+run on the same cells, reproduces its coefficients to
 $7.7\times10^{-5}$.  Because the coefficient is a one-degree-of-freedom
 contrast across 32 clusters and $\sigma$ exceeds it, this is a residual
 model-based state-level association and not a contextual effect.
@@ -368,7 +368,7 @@ coefficients are not doing the same analysis at different levels of
 privacy.  The rate regression estimates a relationship between
 site-level quantities; the coefficient estimates a within-site
 association among records.  On these data the second is recoverable from
-shared summaries to the fourth decimal of the log odds ratio, and the
+shared summaries to within $0.0007$ in the log odds ratio, and the
 first carries an additional $+0.8568$ that no record-level model we
 registered reproduces.  Which object a network shares therefore
 determines what its central analysis can estimate, and the choice is an
@@ -388,10 +388,8 @@ while sharing only summary statistics: sites run a standardized script
 locally and share coefficients, preserving privacy without aggregation
 bias.
 
-\textbf{Large individual-level cohorts.}  N3C~\cite{haendel2021n3c}
-(15 million patients, 75+ sites) and ISARIC (705,000 patients, 1,500+
-sites) contain the individual records needed for direct patient-level
-estimation.
+\textbf{Large individual-level cohorts.}  N3C~\cite{haendel2021n3c} holds individual
+records for direct estimation across more than 75 sites.
 
 \textbf{Hierarchical models.}  Multilevel models with site random
 effects represent both levels explicitly rather than choosing one
@@ -496,8 +494,9 @@ ordinary least-squares regression of site case fatality on the site
 share of records aged 70 or older.  Unweighted fitting is the
 registered primary specification; its estimand is the relationship
 across sites treated as equal units, and binomial and
-population-weighted fits are reported beside it for every site
-definition.  The model-implied slope fits the record-level logistic
+population-weighted fits are reported beside it in the supplement, where
+the population-weighted discrepancy across treating-unit states is
+$+1.3215$ against the unweighted $+0.8568$.  The model-implied slope fits the record-level logistic
 model, averages its predicted probabilities within each site, and
 regresses those averages on the same share over the same sites.  The
 difference between the two slopes is the ecological discrepancy.  Its
@@ -534,9 +533,9 @@ these data rather than a preservation property.
 \textbf{The state-level model.}  A binomial random-intercept model over
 cells of state, age, sex and the nine comorbidities, carrying the
 state's standardized elderly share alongside the record-level
-covariates, fitted by \texttt{lme4::glmer} at 15 adaptive
-Gauss--Hermite nodes and reproduced independently by our own quadrature
-implementation.  Eleven numerical acceptance criteria, fixed before the
+covariates, fitted by \texttt{lme4::glmer} 1.1-31 under R 4.2.2 at 15
+adaptive Gauss--Hermite nodes, and refitted by a second implementation
+of the same quadrature written for this paper.  Eleven numerical acceptance criteria, fixed before the
 fit, govern whether the result is reported as evaluable.
 
 \subsection{Registration and multiplicity}
@@ -559,7 +558,7 @@ All code, analysis scripts, and the frozen analysis protocol are
 available at
 \texttt{github.com/elliottower/ecological-bias-covid}
 and are archived on Zenodo (DOI: 10.5281/zenodo.21252372).
-The CDC data is publicly downloadable from \texttt{data.cdc.gov} (dataset
+The supplementary United States data is publicly downloadable from \texttt{data.cdc.gov} (dataset
 \texttt{vbim-akqf}).  The Mexico data is publicly downloadable from
 \texttt{datos.gob.mx} (Direcci\'{o}n General de Epidemiolog\'{i}a).
 
@@ -612,7 +611,7 @@ the same sites.  The difference of $+0.8568$ falls as the record-level
 model is enriched and remains $+0.5941$ under the richest specification
 registered, and it is not reproduced by site count, site size or the
 allocation of elderly share.  Coefficients pooled from site-level fits
-reproduce the record-level association to the fourth decimal of the log
+reproduce the record-level association to within $0.0007$ in the log
 odds ratio when specifications are aligned.
 
 Site rates and site coefficients are therefore not interchangeable
@@ -637,7 +636,7 @@ criteria and outcomes, reported regardless of result;
 sensitivities beside the unweighted primary fit, and the municipality
 analysis at all four registered size thresholds;
 (E)~the full numerical diagnostics for the state-level model, including
-the independent reimplementation and the eleven acceptance criteria;
+the second implementation and the eleven acceptance criteria;
 (F)~two further record sets analyzed under the same design, United
 States case surveillance grouped by race and ethnicity and the 4CE
 consortium's aggregate neurological data, which are not part of the
@@ -650,9 +649,9 @@ This study used only publicly available, de-identified datasets.  No
 ethics approval or informed consent was required.  The CDC Case
 Surveillance Public Use Dataset is released under a public domain license.
 The Mexico Datos Abiertos dataset is released by the Secretar\'{i}a de
-Salud for public use.  The 4CE consortium data used here consists of
-aggregate site-level summaries previously published in
-\cite{four_ce_neuro2021}.
+Salud for public use.  The United States and 4CE data appear only in the
+supplement; the 4CE material is the aggregate site-level summaries
+published in \cite{four_ce_neuro2021}.
 
 \subsection*{Consent for publication}
 Not applicable.
