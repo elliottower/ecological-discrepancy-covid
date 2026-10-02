@@ -936,9 +936,11 @@ def test_a_float_of_difference_is_not_an_optimizer_that_stopped_short(tmp_path):
     hair = {**fit, "beta": nudged, "params": parameters,
             "log_likelihood": float(fit["model"].loglik(parameters, warm_start=False))}
     close = s12.compare_implementations(settled, hair, names)
-    assert close["our_estimate_scores_higher_by"] < 0          # it did score lower
+    # Which of the two scores higher is not stable at this scale: the gap here runs to
+    # 1e-11 and has been seen with either sign, which is the whole reason a bare
+    # inequality decides nothing. Only the magnitude is meaningful.
     assert abs(close["our_estimate_scores_higher_by"]) < s12.OPTIMIZER_SHORTFALL
-    assert close["our_optimizer_stopped_short"] is False       # and that does not count
+    assert close["our_optimizer_stopped_short"] is False
 
 
 def test_the_comparison_reports_nothing_when_a_fit_is_missing():

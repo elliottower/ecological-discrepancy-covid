@@ -114,431 +114,254 @@ Multi-site consortium studies and federated analysis networks typically have
 access only to site-level summaries and treat them as proxies for
 patient-level truth.
 
-We quantify this distortion using 42 million individual COVID-19 patient
-records from two countries, plus a third dataset of 22,000 patients from 21
-hospitals across 6 countries.  The CDC dataset uses race/ethnicity categories
-as pseudo-sites (7 groups, excluding categories with ambiguous demographic
-composition).  Mexico's 32 states provide a confirmatory test on real
-geographic sites.  In both cases, ecological regression detects a
-statistically significant relationship between age and mortality---but the
-ecological coefficient is a linear slope, while the individual-level truth
-is a multiplicative odds ratio an order of magnitude larger:
+What a network shares is not one choice but several, and they do not
+preserve the same thing.  A network may share site-level rates and
+prevalences, or coefficients from a model each site fits locally, or the
+score and information a distributed likelihood needs.  These are
+routinely treated as interchangeable summaries of the same underlying
+association.  They are not: a regression across site rates estimates a
+relationship between site-level quantities, while a coefficient
+estimates a within-site association among records, and the two coincide
+only under conditions the network cannot check from the summaries alone.
 
-\begin{itemize}
-\item \textbf{CDC (38 million records, 7 pseudo-sites):} ecological
-$\beta = +0.55$, $p = 0.02$; individual OR $= 9.9$, $p < 0.001$.
+The machinery for relating the two has existed for some time.  Aggregate
+rates can be derived from an individual-level disease model by
+integrating it over each area's covariate distribution, which is the
+basis of aggregate-data and hierarchical related regression
+\cite{wakefield2008twophase,jackson2008hierarchical,prentice1995aggregate}.
+Reanalyses of Robinson's own 1930 census data find state variation in
+illiteracy that the states' race and nativity composition does not
+account for \cite{subramanian2009revisiting}, and finer areal units are
+known to reduce the discrepancy \cite{best2001ecological,lancaster2006reducing}.
+What has not been reported is the comparison run on a complete record
+set where both quantities are computable and the shared object is varied
+deliberately: the slope observed across site rates, against the slope the
+fitted record-level model implies for the identical sites and records,
+with the site definition and the record-level model each varied over a
+prespecified range.
 
-\item \textbf{Mexico (4 million records, 32 states):} ecological
-$\beta = +1.31$, $p < 0.0001$; individual OR $= 11.3$, $p < 0.001$.
-\end{itemize}
+We report that comparison on 3\,993\,464 confirmed COVID-19 case records
+from Mexico, and make three claims.  (1)~The observed slope across
+treating-unit states exceeds the slope implied by the registered
+record-level model for the same states by 0.86 percentage points of case
+fatality per point of elderly share, and the difference remains positive
+under every richer specification we registered.  (2)~The difference is
+indexed to that model rather than being a property of the data alone: it
+falls from 0.98 to 0.59 across six prespecified specifications, and a
+model carrying a free term per state would remove it entirely, so the
+quantity measures state-structured lack of fit.  (3)~One-stage and
+two-stage estimators of the record-level association agree to 0.0007 in
+the log odds ratio when their specifications are aligned, so what moves
+the estimate is which object the network shares, not which estimator it
+uses.
 
-Structural consistency tests---methods
-that examine the \emph{structure} of relationships across sites, rather than
-averaging over them---can diagnose when site-level pooling is unreliable.
-Applied to the 4CE consortium's neurological COVID-19 dataset, these methods
-detect coordinated heterogeneity invisible to standard meta-analysis.
-Federated analyses should treat their pooled summaries as hypotheses for
-individual-level testing.
+\section{Results}
 
+\subsection{Rate sharing against coefficient sharing}
 
-\section{Ecological Bias in Two Datasets}
+Across the 32 treating-unit states, state case fatality rises with the
+share of records aged 70 or older at $+1.3105$ percentage points per
+point of elderly share (SE $0.2373$, $R^2 = 0.50$).  Averaging the
+registered record-level model's predicted probabilities within each
+state and regressing those averages on the same share gives $+0.4537$.
+The two are the same kind of quantity over the same 32 points, so the
+difference between them, $+0.8568$ (bootstrap 95\% CI over states
+$0.4956$ to $1.3027$), is the discrepancy a network sharing rates would
+carry and a network sharing coefficients would not.  The registered
+falsification criterion, that the two agree within 20\%, is not met.
 
-\subsection{CDC, United States: ecological distortion with pseudo-sites}
-
-The CDC Case Surveillance dataset contains 38.2 million confirmed COVID-19
-cases with age group, sex, race/ethnicity, hospitalization status, ICU
-admission, and death.  We used 7 race/ethnicity categories as pseudo-sites
-(excluding ``Unknown'' and ``Missing'' categories with ambiguous demographic
-composition; groups range from $n = 13{,}548$ to $n = 6{,}165{,}036$),
-mimicking what a consortium study would have if each racial/ethnic group
-were a separate hospital reporting summary statistics.  This is a deliberate
-simplification that maximizes compositional confounding; the specific
-confounders differ from those in hospital-based consortia (see Limitations).
-
-\textbf{Site-level analysis} aggregated each group's mortality rate
-(deaths/cases) and proportion of patients aged 80+, then regressed one on the
-other across the 7 groups.  Result: a significant positive relationship
-($\beta = +0.55$ mortality-rate units per unit proportion elderly,
-$p = 0.02$, $R^2 = 0.69$).  The ecological regression detects that age
-predicts mortality.
-
-\textbf{Individual-level analysis} on the same 38.2 million patients found
-that being over 80 multiplies the odds of death by 9.9 ($p < 0.001$).
-After adjusting for sex and comorbidities, patients gain 2.4 times the odds of
-dying for each additional decade of age ($p < 0.001$).  Males have 1.7
-times the odds; patients with underlying conditions have 1.5 times the odds.
-
-The ecological regression gets the direction right, but the quantities are
-incommensurable (Figure~\ref{fig:ecological}A): a linear slope of $+0.55$
-stands in for a multiplicative odds ratio of 9.9.  The ecological
-coefficient is not a noisy estimate of the individual-level effect---it is a
-different quantity entirely.
-
-Three pre-registered supplementary analyses illuminate the role of the
-grouping strategy.  When all 105 million CDC records (including probable
-cases and all race/ethnicity categories, compared to the 38.2 million
-confirmed cases used in the primary analysis) are randomly
-partitioned into 9 groups (destroying the race/ethnicity structure),
-ecological regression achieves only 4.8\% power (95\% Wilson CI
-[3.2\%, 7.0\%])---indistinguishable from the false-positive rate
-(Supplement~S6; Figure~\ref{fig:power}).  The race/ethnicity grouping
-succeeds because different racial/ethnic groups have different age
-distributions; random grouping averages out these differences, leaving no
-signal for ecological regression to detect.  Duncan--Davis ecological
-inference bounds on the elderly mortality rate span [0, 24.4\%], containing
-the true 9.91\% rate but too wide to be informative (Supplement~S4).
-
-
-\subsection{Mexico: ecological distortion with real geographic sites}
-
-Mexico's COVID-19 surveillance data provides a confirmatory test on real
-geographic sites: 3,993,464 confirmed cases across
-32 real geographic states, each corresponding to the state of the treating
-medical unit.
-
-\textbf{Site-level analysis} across the 32 states finds a significant
-relationship between the proportion of patients aged 70+ and the state
-mortality rate ($\beta = +1.31$ mortality-rate units per unit proportion
-elderly, $p < 0.0001$, $R^2 = 0.50$).  Concretely, a 10-percentage-point
-increase in a state's elderly share predicts a 13.1-percentage-point
-increase in state mortality.
-
-\textbf{Individual-level analysis} on the same 4 million patients reveals the
-true effect: patients aged 70 or older have 11.3 times the odds of dying
-($p < 0.001$).  After adjusting for sex and 9 individual comorbidities
-(diabetes, hypertension, obesity, cardiovascular disease, chronic kidney
-disease, COPD, asthma, immunosuppression, and smoking), the adjusted odds
-ratio remains 8.0 ($p < 0.001$).  Males have 1.7 times the odds;
-patients with any comorbidity have 3.8 times the odds.
-
-Site-level analysis gets the direction right and the size wrong (Figure~\ref{fig:ecological}B): a linear
-slope of $+1.31$ standing in for an odds ratio of 11.
-
-Supplementary analyses quantify this distortion directly.  To isolate the
-aggregation bias, we fitted the individual-level logistic model
-(elderly, sex, comorbidity) and computed the ecological slope that
-\emph{would} arise if the ecological regression faithfully summarized the
-individual-level relationship.  The observed ecological slope is 2.09 times
-the expected slope---a 109\% amplification from aggregation bias
-(Supplement~S3).  Two individual-level pooling methods---two-stage IPD
-meta-analysis (per-state logistic regression pooled via DerSimonian--Laird
-random effects) and one-stage IPD (logistic with state fixed
-effects)---recover odds ratios of 5.34 and 5.22, respectively, agreeing
-within 2\% (Supplement~S9).  Both IPD methods recover the individual-level effect; the ecological regression does not.
+Sharing coefficients instead reproduces the record-level association
+(Table~\ref{tab:estimators}).  Estimators separate by the quantity they
+target rather than by whether the fit is one-stage or two-stage: the
+four common-effect specifications fall between odds ratios $11.26$ and
+$11.28$, the four random-effects specifications between $11.73$ and
+$11.74$, and aligned pairs agree to $0.00015$ and $0.00068$ in the log
+odds ratio.  Heterogeneity is preserved rather than hidden: per-state
+odds ratios run from $7.99$ to $18.09$, $I^2 = 97.4\%$, with a
+prediction interval of $8.43$ to $16.32$.
 
 \begin{table}[t]
 \centering
-\caption{Ecological distortion in both datasets.  Site-level regression
-detects a significant relationship in both cases, but the ecological
-coefficient (a linear slope) is incommensurable with the individual-level
-truth (a multiplicative odds ratio).}
-\label{tab:ecological}
-\begin{tabular}{llcc}
+\caption{Estimators of the record-level association between age 70 or
+older and death, Mexico, 3\,993\,464 records in 32 treating-unit states.
+Specifications are grouped by the quantity they target.  Within each
+group, one-stage and two-stage fits agree to the fourth decimal of the
+log odds ratio; between groups they differ by 4.2\%, which is the
+common-effect against random-effects choice and not the one-stage
+against two-stage one.}
+\label{tab:estimators}
+\begin{tabular}{llc}
 \toprule
-Dataset & Analysis level & Effect size & $p$-value \\
+Target & Specification & Odds ratio \\
 \midrule
-\multicolumn{4}{l}{\emph{CDC (38.2M cases, 7 pseudo-sites):}} \\
-& Site-level regression & $\beta = +0.55$ & 0.02 \\
-& Individual: age per decade & OR $= 2.40$ & $< 0.001$ \\
-& Individual: age 80+ & OR $= 9.88$ & $< 0.001$ \\
+\multicolumn{3}{l}{\emph{Common effect}} \\
+& Pooled record level                  & 11.264 \\
+& One-stage, state fixed effects       & 11.275 \\
+& One-stage, random intercept          & 11.275 \\
+& Two-stage, common effect             & 11.276 \\
 \midrule
-\multicolumn{4}{l}{\emph{Mexico (4.0M cases, 32 states):}} \\
-& Site-level regression & $\beta = +1.31$ & $< 0.0001$ \\
-& Individual: age 70+ & OR $= 11.26$ & $< 0.001$ \\
-& Individual: adjusted & OR $= 7.97$ & $< 0.001$ \\
+\multicolumn{3}{l}{\emph{Random effects}} \\
+& Two-stage, DerSimonian--Laird        & 11.729 \\
+& Two-stage, REML, Hartung--Knapp      & 11.737 \\
+& One-stage, random slope              & 11.737 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=\textwidth]{figures/fig1_ecological_bias.pdf}
-\caption{Site-level ecological regressions for both datasets.
-\textbf{(A)}~CDC: 7 race/ethnicity pseudo-sites show a significant
-relationship ($\beta = +0.55$, $p = 0.02$), but this linear slope is
-incommensurable with the individual-level odds ratio of 9.9.
-\textbf{(B)}~Mexico: 32 states show a stronger ecological slope
-($\beta = +1.31$, $p < 0.0001$), equally incommensurable with the
-individual-level odds ratio of 11.3.  In both cases, ecological
-regression reports a linear coefficient where the patient-level truth
-is a multiplicative odds ratio an order of magnitude larger.}
-\label{fig:ecological}
-\end{figure}
+\subsection{Dependence on the record-level model}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.6\textwidth]{figures/fig2_power.pdf}
-\caption{Statistical power of ecological regression depends on the grouping
-strategy, not the sample size.  Grouping 105 million CDC records by
-race/ethnicity produces pseudo-sites with distinct age distributions,
-giving 100\% power.  Random grouping averages out demographic differences:
-at $n = 9$ groups, power is 4.8\% (indistinguishable from the
-false-positive rate); at $n = 50$, power reaches only 29\%.
-Based on 2{,}000 simulations per condition (Supplements~S1 and S6).}
-\label{fig:power}
-\end{figure}
-
-These results are complementary.  Both datasets show ecological regression
-detecting a statistically significant relationship, but in both cases the
-ecological coefficient is a linear slope where the patient-level truth is a
-multiplicative odds ratio an order of magnitude larger---a different
-quantity, not a noisy estimate of the same one.  Any federated analysis
-relying on site-level summaries faces this distortion.
-
-
-\subsection{Why does this happen?}
-\label{sec:why}
-
-Two mechanisms drive the distortion.  \emph{Cross-level confounding}: the
-7 CDC pseudo-sites differ in sex ratios (15\%--65\% male) and comorbidity
-prevalence (0.5\%--14\%), and these confounders are entangled with the
-grouping variable at the ecological level.  \emph{Aggregation bias}: the
-ecological regression fits a linear slope to group-level proportions,
-while the true patient-level relationship is a nonlinear odds ratio.
-Noncollapsibility of the odds ratio~\cite{greenland1999noncollapsibility}
-compounds both effects---even without confounding, the marginal and
-conditional odds ratios differ whenever the outcome is common or the
-exposure effect varies across strata.
-
-A simulation (Supplement~S1) isolates the role of grouping strategy:
-ecological regression on CDC-matched synthetic data achieves 100\% power
-when grouping preserves demographic differences, but only 4.8\% power
-under random grouping (Figure~\ref{fig:power})---indistinguishable from
-the false-positive rate.
-
-Throughout this paper, ecological $\beta$ (a linear slope), odds ratios
-(a multiplicative comparison), and PMIs (observed/expected ratios) each
-measure different quantities.
-
-The ecological fallacy arises from the analysis architecture---how data is
-aggregated across sites---not from the disease.  COVID-19 serves as a test
-case because individual-level records are available for validation, but
-the bias applies identically to drug-safety surveillance, federated
-genomic association, and any multi-site study that pools site-level
-summaries.
-
-
-\section{Clinical Consequences: The 4CE Neurological Dataset}
-
-The ecological bias demonstrated in Sections~2.1--2.2 has direct clinical
-consequences.  The 4CE consortium (Consortium for Clinical Characterization
-of COVID-19 by EHR) analyzed neurological outcomes in over 22,000
-hospitalized patients across 21 hospitals in 6 countries
-\cite{four_ce_neuro2021}, using aggregate site-level data.  The original
-4CE study reported site-level proportional morbidity indices and noted
-significant between-site heterogeneity; we re-analyze this dataset
-using the ecological bias framework from Sections~2.1--2.2 to characterize
-\emph{why} the heterogeneity arises and what it implies for the pooled
-estimates.  Our critique is not of 4CE specifically---the consortium
-acknowledged heterogeneity and used standard methods---but of the broader
-practice of pooling site-level summaries when the ecological fallacy applies.
-
-
-\subsection{CNS involvement and the 350-fold method divergence}
-
-Among well-measured sites ($\text{SE} < 0.5$ on the log scale; $k = 11$--16
-per timepoint), the fixed-effects proportional morbidity index (PMI) for CNS
-involvement is 1.97 (95\% CI: [1.87, 2.09]) at 30 days.  This estimate must
-be interpreted cautiously: $I^2 = 99.8\%$ (Cochran's $Q = 6318$, $p <
-10^{-15}$) means essentially all variation is between-site, violating the
-common-effect assumption that fixed-effects requires.
-
-The 350-fold divergence between pooling methods (Table~\ref{tab:meta}) is a
-diagnostic failure, partly numerical in origin.  The random-effects PMI of
-702 is a numerical artifact: several small sites produce PMIs of
-$10^{8}$--$10^{18}$ from complete separation (zero cells in contingency
-tables), and the DerSimonian--Laird estimator is known to perform poorly
-with sparse data and extreme heterogeneity, producing unstable
-between-study variance estimates $\hat\tau^2$ that amplify these outliers.  Among the 11 sites with $\text{SE} < 0.4$, the picture is more
-consistent (PMIs between 1.4 and 2.8), but even this restricted set shows
-$I^2 > 95\%$.  The method divergence signals that this dataset requires
-decomposition of heterogeneity rather than a pooled estimate.
-Leave-one-site-out analysis confirms this divergence is structural:
-dropping each of the 20 sites in turn, the RE/FE ratio ranges from
-18 to 984, never falling below 10-fold (Supplement~S8).  No single
-site drives the result.
+The discrepancy is defined against a model, and it shrinks as that model
+is enriched (Table~\ref{tab:ladder}).  Entering age as a spline with the
+nine comorbidities separately moves the implied slope from $+0.4537$ to
+$+0.6549$ and the discrepancy from $+0.8568$ to $+0.6557$; adding
+calendar month of onset leaves $+0.5941$.  The bootstrap interval
+excludes zero at every rung.  A model carrying a free term per state
+would reproduce each state's rate exactly and remove the discrepancy
+altogether, so the quantity measures state-structured lack of fit of a
+specified model rather than a model-free amount of ecological bias.
 
 \begin{table}[t]
 \centering
-\caption{\textbf{The 350-fold divergence between pooling methods is a
-diagnostic artifact, not a finding.}  The random-effects PMI of 702 results
-from complete separation at small sites (PMIs of $10^{8}$--$10^{18}$)
-up-weighted by the DerSimonian--Laird estimator.  No single pooled number
-is appropriate for this data ($I^2 = 99.8\%$).  The divergence itself is
-the result: it signals that the underlying heterogeneity requires
-decomposition, not averaging.}
-\label{tab:meta}
-\begin{tabular}{llccc}
-\toprule
-Method & Pooled PMI & 95\% CI & $p$ & $I^2$ \\
-\midrule
-Fixed-effects (IV) & 1.97 & [1.87, 2.09] & $< 10^{-6}$ & 99.8\% \\
-Random-effects (DL) & 702 & [201, 2460] & $< 10^{-6}$ & --- \\
-Influence function & 972 & [1.6, 587K] & 0.035 & --- \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Peripheral nervous system involvement provides a negative control.  PNS
-diagnoses show a PMI of 1.04 at 30 days (95\% CI: [0.95, 1.14],
-$p = 0.37$), indistinguishable from the null.  If the CNS effect were
-driven by sicker patients receiving more diagnostic workups (which would
-also detect peripheral neuropathies), PNS diagnoses should show a similar
-signal.  They do not.  The specificity to CNS involvement is consistent
-with SARS-CoV-2 neuroinvasion through the blood-brain barrier
-\cite{song2021neuroinvasion} and central neuroinflammation
-\cite{iadecola2020covid}, mechanisms that do not produce peripheral
-neuropathy.
-
-
-\subsection{Age drives between-site variation}
-
-Meta-regression of the CNS severity effect (30-day PMI, log scale) on four
-site-level demographics identifies the proportion of elderly patients as the
-strongest moderator ($\beta = +14.2$, $\text{SE} = 0.83$,
-$p < 10^{-15}$).  The direction is clear: sites serving older populations
-show larger neurological effects.  The magnitude should be treated as
-directional evidence only.  With ${\sim}20$ sites, Type~M error
-\cite{gelman2014typeMS} systematically inflates significant coefficients;
-hierarchical shrinkage is the appropriate estimator for effect size, and
-we report $\beta = +14.2$ as evidence that elderly proportion is the
-dominant moderator, not as an estimate of its strength.
-
-This pattern is consistent with age-dependent blood-brain barrier
-vulnerability \cite{montagne2015bbb} and chronic low-grade inflammation
-\cite{franceschi2018inflammaging}, but site-level data cannot distinguish
-this biological explanation from compositional confounding: sites with more
-elderly patients also differ in comorbidity burden, coding practices, and
-clinical management.  The E-value for the elderly-proportion moderator
-(point estimate: $2.9 \times 10^{6}$; 95\% CI lower bound:
-$5.8 \times 10^{5}$) indicates that no plausible unmeasured confounder
-could explain the association (Supplement~S7; \cite{vanderweele2017}).
-
-\begin{table}[t]
-\centering
-\caption{Meta-regression moderators of the CNS severity association (30-day
-PMI).  Elderly proportion is the strongest moderator.  Baseline severity
-acts in the opposite direction (ceiling effect).  The large $\beta$
-magnitudes are likely inflated by Type~M error \cite{gelman2014typeMS} from
-$\sim$20 sites.}
-\label{tab:moderators}
-\begin{tabular}{lcccc}
-\toprule
-Moderator & $\beta$ & SE & $p$ & Range across sites \\
-\midrule
-Proportion age $\geq 80$ & $+14.2$ & 0.83 & $< 10^{-15}$ & 0.01--0.43 \\
-Proportion female & $+1.13$ & 0.14 & $< 10^{-15}$ & 0.06--0.53 \\
-Baseline severity & $-2.91$ & 0.23 & $< 10^{-15}$ & 0.06--0.73 \\
-Number of patients & $-0.0003$ & 0.00005 & $< 10^{-9}$ & 32--22{,}789 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-A site-level interaction between elderly proportion and mortality rate is
-significant at 60 and 90 days after FDR correction ($p = 0.024$, $p = 0.021$;
-the 30-day value does not survive).  The coefficient magnitudes
-($\beta = +32$ to $+38$) are directional evidence only, likely inflated
-by Type~M error~\cite{gelman2014typeMS} from $\sim$20 sites.
-
-
-\subsection{Comorbidity correlations differ systematically across sites}
-
-Elixhauser comorbidity correlation matrices \cite{elixhauser1998} from 20
-4CE sites show collective inconsistency when tested with a multivariate
-consistency statistic: $z = 25.0$ ($p < 0.0001$), with comparable signals
-in CNS-only ($z = 14.4$) and PNS-only ($z = 14.4$) subgroups
-(Table~\ref{tab:consistency}).
-
-\begin{table}[t]
-\centering
-\caption{Cross-site consistency of comorbidity correlation patterns.  The
-multivariate consistency statistic detects collective inconsistency
-($z = 25$) that pairwise Cochran's $Q$ tests miss entirely (0/1305
-significant).}
-\label{tab:consistency}
+\caption{Observed minus model-implied ecological slope across six
+prespecified record-level models, in percentage points of case fatality
+per point of elderly share.  The observed slope is $+1.3105$ throughout.
+Intervals are a state bootstrap with the record-level model refitted in
+each draw.  Specifications were registered at commit \texttt{a38196b}
+before any was fitted.}
+\label{tab:ladder}
 \begin{tabular}{lccc}
 \toprule
-Test & Statistic & $p$ & Significant pairs \\
+Record-level model & Implied & Difference & 95\% CI \\
 \midrule
-Consistency (all patients) & $z = 25.0$ & $< 0.0001$ & N/A (collective) \\
-Consistency (CNS only) & $z = 14.4$ & $< 0.0001$ & N/A (collective) \\
-Consistency (PNS only) & $z = 14.4$ & $< 0.0001$ & N/A (collective) \\
-Cochran's $Q$ (per pair) & max $Q = 13.4$ & all $> 0.05$ & 0/1305 \\
+Age 70+                                   & 0.332 & 0.979 & 0.605--1.458 \\
+\;\;+ sex, any comorbidity \emph{(registered)} & 0.454 & 0.857 & 0.496--1.303 \\
+\;\;+ nine comorbidities separately       & 0.495 & 0.816 & 0.478--1.243 \\
+Age in ten-year bands                     & 0.650 & 0.661 & 0.269--1.148 \\
+Age as a restricted cubic spline          & 0.655 & 0.656 & 0.260--1.149 \\
+\;\;+ calendar month of onset             & 0.716 & 0.594 & 0.212--1.070 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-No single comorbidity pair varies enough across sites to reach significance
-on its own.  The consistency test detects their collective pattern: the
-aggregate structure of small per-pair differences is far more extreme than
-chance.  Standard meta-analysis assumes the covariate relationships being
-adjusted for are constant across sites; this result says they are not.  The most
-heterogeneous pairs---HIV-Lymphoma ($Q = 13.4$, $r = 0.09 \pm 0.25$) and
-Alcohol-Drugs ($Q = 12.9$, $r = 0.70 \pm 0.24$)---illustrate how coding
-and documentation practices drive cross-site inconsistency that the
-collective test detects.
+\subsection{Dependence on the site definition}
 
+The discrepancy is also a property of how sites are drawn
+(Table~\ref{tab:sites}).  It is $+0.8497$ across the 32 states of
+residence and $+0.7657$ across the 11 health-care sectors.  On the
+3\,665\,523 records retained by the municipality size rule, it is
+$+0.4689$ across 385 municipalities against $+1.0087$ across the states
+those municipalities nest in, a paired difference of $-0.5398$
+(state-clustered bootstrap $-1.1642$ to $-0.1299$).  Finer units carry
+less of it, consistent with what is reported for nested residential
+geographies \cite{best2001ecological,lancaster2006reducing}, although
+elderly share is measured from the same records and is estimated less
+precisely in small units.
 
-\section{Structural Diagnostics Across All Three Datasets}
+Reassigning records at random to pseudo-sites that reproduce every
+state's size and count aged 70 or older exactly, without using any other
+record field, leaves a median discrepancy of $+0.0005$ over 500
+replications with zero deviation from either quota.  Both slopes remain
+positive under the reassignment, at $+0.332$ observed and $+0.332$
+implied, so the pseudo-sites are not uniform; what the reassignment
+removes is the gap between them.  The expectation of that gap is zero
+under this scheme, because the record-level model is fitted by maximum
+likelihood and its residuals sum to zero within the strata the quotas
+hold fixed, so the result is a check on the construction rather than
+evidence about geography.  What it establishes is that site count, site
+size and the allocation of elderly share across sites are not sufficient
+to produce the discrepancy.
 
-Two structural diagnostics---the consistency statistic and per-site interaction
-analysis---provide partial answers.
+\begin{table}[t]
+\centering
+\caption{Observed and model-implied ecological slopes under each
+prespecified site definition, with the registered three-covariate
+record-level model.  The municipality row is restricted to municipalities
+with at least 1000 records and is paired against the states of residence
+those municipalities nest in, on the same records.}
+\label{tab:sites}
+\begin{tabular}{lcccc}
+\toprule
+Site definition & Sites & Observed & Implied & Difference \\
+\midrule
+Treating-unit state        & 32  & 1.311 & 0.454 & 0.857 \\
+State of residence         & 32  & 1.305 & 0.455 & 0.850 \\
+Health-care sector         & 11  & 1.193 & 0.428 & 0.766 \\
+Municipality ($\geq$1000 records) & 385 & ---   & ---   & 0.469 \\
+\;\;paired states of residence    & 32  & ---   & ---   & 1.009 \\
+Size- and share-matched partition & 32  & 0.332 & 0.332 & 0.000 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\subsection{The consistency test: power requires heterogeneous coverage}
+\subsection{A residual state-level association}
 
-The consistency statistic measures whether per-site correlation matrices
-disagree more than expected by chance.  Its power depends on a structural
-property of the data: whether different sites report different subsets of
-variable pairs (heterogeneous coverage) or all report the same pairs
-(homogeneous coverage).
+Fitting the state's standardized elderly share alongside the
+record-level covariates of the richest composition model, as a binomial
+random-intercept model over 152\,919 cells by adaptive Gauss--Hermite
+quadrature at 15 nodes, leaves an odds ratio of $1.1817$ per standard
+deviation (profile-likelihood interval $1.0719$ to $1.3027$) with a
+random-intercept standard deviation of $0.2682$.  The fit meets all
+eleven numerical acceptance criteria fixed before it was run, and an
+independent reimplementation reproduces its coefficients to
+$7.7\times10^{-5}$.  Because the coefficient is a one-degree-of-freedom
+contrast across 32 clusters and $\sigma$ exceeds it, this is a residual
+model-based state-level association and not a contextual effect.
 
-On the CDC data (all 9 race/ethnicity groups including Unknown and
-Missing, all reporting all 15 variable pairs), the
-permutation null is degenerate: $z = 0$, null standard deviation
-$< 10^{-16}$.  On Mexico's 32 states (all reporting all 15 pairs), the
-same degeneracy appears: $z = 0.47$, effectively null.
-Supplement~A explains this degeneracy and confirms it
-empirically on all three datasets.
+\subsection{Mechanism}
+\label{sec:why}
 
-On the 4CE data, where coverage is heterogeneous (10 sites report
-36--296 of 1,305 possible comorbidity pairs; 10 report all 1,305), the
-same test produces $z = 25$ ($p < 0.0001$).  The test's power depends on
-heterogeneous coverage---a property of the data structure, not the signal.
-This is a practical guide for federated networks: the consistency test is
-most useful when sites have different measurement capabilities,
-which is the norm in multi-national consortia.  A simulation calibration
-(Supplement~S10) confirms the test is well-calibrated under the null:
-the false-positive rate at $|z| > 2$ is 4.1\% (nominal target
-$\leq$ 6\%), and no simulation of 2{,}000 produced $|z| > 25$.
+A regression across site rates absorbs any between-site variation in the
+outcome that correlates with the regressor, whatever produces it.  The
+slope implied by a record-level model carries only what that model
+attributes to the covariates it holds, averaged over each site's own
+covariate distribution.  Their difference is therefore everything the
+site rates contain that the record-level model does not reproduce, and
+the two experiments above bound it from either side: the quota-matched
+reassignment shows that site count, site size and the allocation of
+elderly share are not sufficient to generate it, and the covariate
+ladder shows that measured composition accounts for part of it and
+leaves the rest.
 
+What remains is not attributable from this design.  It contains
+unmeasured composition, differences in case ascertainment and coding
+between states, the point each state had reached in its epidemic, any
+genuine effect of where a patient was treated, and misspecification of
+the record-level model, which enters the residual by construction.
+Noncollapsibility of the odds ratio
+\cite{greenland1999noncollapsibility} does not contaminate the
+comparison, because the implied slope is formed from predicted
+probabilities rather than from a conditional coefficient; it does bear
+on any attempt to read the record-level odds ratio as the quantity the
+ecological slope is estimating.
 
-\subsection{Per-site interactions: effect modification varies everywhere}
-
-Per-site logistic regressions reveal genuine variation in the
-age $\times$ comorbidity interaction across all three datasets.  In the
-CDC data, interaction ORs range 3-fold (0.23--0.69) across 9 groups; in
-Mexico, 2-fold (0.19--0.38) across 32 states; in the 4CE data, the
-age $\times$ mortality interaction is significant at all three timepoints.
-The consistency of this variation across three independent datasets is
-direct evidence that pooling loses information about effect modification
-(Supplementary Table~S1).
-
+The distortion follows from the analysis architecture rather than from
+the disease.  COVID-19 serves here because record-level data are
+available for both halves of the comparison, which is what makes the
+benchmark computable at all; the same structure applies to drug-safety
+surveillance, federated genomic association, and any multi-site study
+pooling site-level summaries.
 
 \section{Discussion}
 
 \subsection{Implications for federated analysis infrastructure}
 
-The distortion is worse than noise: a noisy estimate could in principle
-be corrected, but a linear slope is not a noisy estimate of an odds
-ratio---it is a different quantity entirely.  Aggregation destroys the
-within-site covariance structure that individual-level analysis exploits.
-Site-level pooling is valid only under restrictive conditions---exchangeable
-sites, homogeneous exposure--outcome relationships, no cross-level
-confounders---that rarely hold in practice.
+A network that shares site rates and a network that shares per-site
+coefficients are not doing the same analysis at different levels of
+privacy.  The rate regression estimates a relationship between
+site-level quantities; the coefficient estimates a within-site
+association among records.  On these data the second is recoverable from
+shared summaries to the fourth decimal of the log odds ratio, and the
+first carries an additional $+0.8568$ that no record-level model we
+registered reproduces.  Which object a network shares therefore
+determines what its central analysis can estimate, and the choice is an
+estimand question before it is a privacy or engineering one.
 
-The consistency test and per-site interaction analysis offer partial
-diagnostics, but neither recovers the individual-level answer.  Three
-approaches go further.
+That does not make rate sharing wrong.  A cross-site rate relationship
+is a well-defined quantity and may be the one a surveillance question
+asks for.  It is wrong only when read as the association among patients,
+and a network cannot tell the two apart from the summaries alone: the
+discrepancy reported here is invisible without the records.  Three
+routes avoid the substitution.
 
 \textbf{Federated regression.}
 Fed-GLMM~\cite{yan2023fedglmm} and
@@ -552,152 +375,165 @@ bias.
 sites) contain the individual records needed for direct patient-level
 estimation.
 
-\textbf{Hierarchical models.}  As
-Diez-Roux~\cite{diezroux2000multilevel} argued, multilevel models with
-site random effects address both the ecological fallacy and Type~M
-inflation~\cite{gelman2012multilevel} by shrinking extreme site-level
-estimates toward the group mean.
+\textbf{Hierarchical models.}  Multilevel models with site random
+effects represent both levels explicitly rather than choosing one
+\cite{diezroux2000multilevel}, and shrinkage toward the group mean
+limits the inflation of extreme site-level estimates
+\cite{gelman2012multilevel}.
 
 \subsection{Practical guidelines for multi-site studies}
 
-The ecological fallacy is not specific to COVID-19.  Any multi-site
-study---genome-wide association, multi-center drug trials, educational
-interventions---faces the same risk when the units of analysis (sites)
-differ systematically from the units of inference (people).
+The problem is not specific to COVID-19.  Any multi-site study---%
+genome-wide association, multi-center trials, educational
+interventions---faces it when the units that share data differ
+systematically from the units the inference is about.
 
-\paragraph{Report heterogeneity honestly.}
-$I^2 = 99.8\%$ means the pooled average is almost meaningless.
-Report the full distribution of site-level effects alongside any
-pooled estimate.  When $I^2$ exceeds 75\%, treat the pooled value as a
-hypothesis, not a conclusion.
+\paragraph{Name the estimand the shared object supports.}
+A protocol that says a network will ``pool site-level data'' has not
+said what it will estimate.  Site rates support a cross-site
+relationship; per-site coefficients support a within-site association.
+Writing which one the study targets, before the summaries are
+collected, is the step that makes the rest checkable.
 
-\paragraph{Test the structure, not just the average.}
-Consistency tests detect coordinated between-site differences that
-Cochran's $Q$ (one variable at a time) misses.  Hierarchical models
-with site random effects address both the multiplicity problem (through
-partial pooling) and Type~M inflation (through shrinkage).  The R
-\texttt{metafor} package~\cite{viechtbauer2010metafor} provides these
-diagnostics in a single function call (\texttt{rma.mv} with site-level
-random effects).
+\paragraph{Report heterogeneity rather than averaging it away.}
+Per-state odds ratios here run from 7.99 to 18.09 with $I^2 = 97.4\%$
+and a prediction interval of 8.43 to 16.32, around a pooled 11.73.  The
+pooled value is still the right answer to the question it answers, and
+the distribution is what tells a reader whether that question is the
+one they have.  Report both.
 
-\paragraph{Seek individual-level estimation.}
-The ecological fallacy is a problem of aggregation; the definitive
-solution is disaggregation.  Modern frameworks make this feasible even
-when raw records cannot leave the hospital.
-Fed-GLMM~\cite{yan2023fedglmm} achieves near-identical results to
-pooled generalized linear mixed models while sharing only summary
-statistics: sites run a standardized analysis script locally and share
-coefficients (point estimates, standard errors, sample sizes), preserving
-privacy while enabling patient-level estimation.
-DataSHIELD~\cite{banerjee2022dssurvival} provides privacy-preserving
-survival analysis across federated nodes.  These tools should replace
-site-level ecological pooling as the default analysis in federated
-networks.
+\paragraph{Share coefficients when the target is an individual-level
+association.}  Fed-GLMM~\cite{yan2023fedglmm} and
+DataSHIELD~\cite{banerjee2022dssurvival} estimate individual-level
+models while transmitting only summaries: sites run a standardized
+script locally and share coefficients with their standard errors and
+sample sizes.  The agreement in Table~\ref{tab:estimators} holds for
+compatible local models, harmonized coding and adequate cell counts at
+each site, and these are conditions a network has to verify rather than
+assume.
 
-\paragraph{Disclose the full analysis menu.}
-State how many tests were run and report all results, including nulls.
-Pre-register the primary analysis and distinguish it from exploratory
-follow-up.
-
+\paragraph{Register the benchmark, not only the procedure.}
+Where a reported quantity is a comparison against a model, the model is
+part of what is being reported.  The discrepancy here moves from
+$+0.979$ to $+0.594$ with the choice of record-level model and from
+$+0.857$ to $+1.322$ with the choice between unweighted and
+population-weighted fitting, both larger than the movement from any
+single covariate.  A registration that fixes the procedure and leaves
+the benchmark open has not fixed the number.
 
 \section{Methods}
 
 \subsection{Reporting guidelines}
 
-This study uses routinely collected health data from three sources.
-We follow the RECORD (REporting of studies Conducted using
-Observational Routinely-collected health Data) extension of the
-STROBE statement where applicable~\cite{benchimol2015record}.
-The CDC and Mexico analyses use individual-level data and follow
-RECORD items for cohort studies.  The 4CE analysis uses aggregate
-site-level summaries and follows STROBE items for cross-sectional
-ecological analyses, with deviations noted where site-level data
-precludes individual-level reporting.
+This study uses routinely collected health data.  We follow the RECORD
+extension of the STROBE statement for studies conducted using
+observational routinely collected health data~\cite{benchimol2015record}.
+The unit of analysis is a case record: the source carries a record
+identifier and no person identifier, so repeat presentations by one
+patient cannot be collapsed and are not treated as such.
 
-\subsection{Data sources}
+\subsection{Data and provenance}
 
-\textbf{CDC Case Surveillance.}  The CDC COVID-19 Case Surveillance Public
-Use Dataset contains 38,173,454 confirmed and probable COVID-19 cases reported
-to the CDC through 2022.  Each record includes onset date, age group (9
-categories: 0--9 through 80+), sex, race/ethnicity (9 categories),
-hospitalization, ICU admission, death, and underlying medical condition (binary
-flag).  No geographic identifiers are present in the public version.  We used
-7 race/ethnicity categories as pseudo-sites, excluding ``Unknown'' and
-``Missing'' categories with ambiguous demographic composition ($n$ ranging
-from 13,548 to 6,165,036).
+Mexico's Secretar\'{i}a de Salud publishes individual-level COVID-19
+surveillance data covering all confirmed and suspected cases
+nationwide.  We used the January 3, 2022 historical snapshot
+(12\,425\,179 records, 3\,993\,464 confirmed cases, 299\,581 deaths),
+pinned by SHA-256 and verified on every run.  Each record carries age,
+sex, state of the treating medical unit, state and municipality of
+residence, the delivering sector, symptom-onset date, death date and
+nine comorbidity flags.  Cases were classified as confirmed when
+\texttt{CLASIFICACION\_FINAL} $\in \{1,2,3\}$.  The 32 treating-unit
+states range from 22\,307 records (Chiapas) to 1\,154\,276 (Mexico
+City).  The loader enforces the published catalogue's validity domain
+and reports every code outside it; 2874 records carry no municipality
+and 20 no sector, and these are excluded only from the site definitions
+that need them.
 
-\textbf{Mexico Datos Abiertos.}  Mexico's Secretar\'{i}a de Salud publishes
-individual-level COVID-19 surveillance data covering all confirmed and
-suspected cases nationwide.  We used the January 3, 2022 historical snapshot
-(12,425,179 total records, 3,993,464 confirmed COVID-19 cases, 299,581
-deaths).  Each record includes age, sex, state of the treating medical unit
-(ENTIDAD\_UM, 32 states), death date, and 9 individual comorbidity flags
-(diabetes, hypertension, obesity, cardiovascular disease, chronic kidney
-disease, COPD, asthma, immunosuppression, smoking).  Cases were classified as
-confirmed when CLASIFICACION\_FINAL $\in \{1, 2, 3\}$.  We used state of
-medical unit as the site variable, providing 32 real geographic sites with
-$n$ ranging from 8,759 (Colima) to 637,408 (Mexico City).
+Analyses ran in a container that verifies, against a manifest the
+launcher supplies, that the analysis files it holds are the committed
+ones before any of them executes.  Each reported number is bound to the
+run that produced it in a hash-chained ledger, which is in the
+repository.
 
-\textbf{4CE Consortium.}  Aggregate site-level data from the 4CE consortium's
-Phase 2.1 Neurological Analysis \cite{four_ce_neuro2021}: 21 healthcare sites
-across 6 countries (USA, France, Germany, UK, Singapore, Italy), over 22,000
-hospitalized COVID-19 patients.  Data included site-level demographics,
-Elixhauser comorbidity scores \cite{elixhauser1998}, and proportional morbidity
-index (PMI) for CNS and PNS neurological involvement at 30, 60, and 90 days.
+\subsection{Three architectures on one cohort}
+
+A federated network never holds the records, so it cannot compare what
+its shared summaries preserve against what the records support.  We
+reproduce the three architectures on one complete record set, which is
+the only arrangement in which both sides of the comparison are
+computable.  \emph{Rate sharing}: each site contributes its case
+fatality and its share of records aged 70 or older, and a regression
+across sites estimates the relationship between them.  \emph{Coefficient
+sharing}: each site fits the same logistic model locally and contributes
+its coefficients and their standard errors, which are pooled by
+inverse-variance meta-analysis.  \emph{Centralized}: the records are
+pooled and one model is fitted.  The second and third are compared under
+matched specifications, since an unaligned pair differs by its target
+rather than by its architecture.
 
 \subsection{Statistical analyses}
 
-\textbf{Ecological regression.}  For each dataset, we computed per-site
-proportions of elderly patients and mortality rates, then regressed site
-mortality on site elderly proportion using ordinary least squares.  For CDC
-data, elderly was defined as age 80+; for Mexico, age 70+.
+\textbf{The two slopes.}  The observed ecological slope is an unweighted
+ordinary least-squares regression of site case fatality on the site
+share of records aged 70 or older.  Unweighted fitting is the
+registered primary specification; its estimand is the relationship
+across sites treated as equal units, and binomial and
+population-weighted fits are reported beside it for every site
+definition.  The model-implied slope fits the record-level logistic
+model, averages its predicted probabilities within each site, and
+regresses those averages on the same share over the same sites.  The
+difference between the two slopes is the ecological discrepancy.  Its
+interval is a bootstrap over sites with the record-level model refitted
+inside every draw; the ordinary least-squares standard error of the
+implied slope is not an uncertainty for it, because its response is
+fitted rather than observed.
 
-\textbf{Individual-level logistic regression.}  We fit logistic regression
-models on the complete individual-level data: (1)~death $\sim$ age;
-(2)~death $\sim$ age + sex + comorbidity; (3)~death $\sim$ age $\times$
-comorbidity + sex.  For the CDC data, age was coded as the midpoint of the
-age group (5, 15, \ldots, 85); for Mexico, age was continuous, dichotomized
-at 70.  Odds ratios are reported per decade (CDC) or as binary contrasts
-(Mexico).  We used \texttt{statsmodels} v0.14 for estimation.
+\textbf{Record-level models.}  Six specifications of increasing
+adjustment, registered before any was fitted: age 70 or older alone;
+plus sex and any of nine comorbidities; the nine entered separately;
+age in ten-year bands; age as a restricted cubic spline with five knots
+at the 5th, 27.5th, 50th, 72.5th and 95th percentiles; and that model
+plus calendar month of symptom onset.  Estimation used
+\texttt{statsmodels} 0.14.6.
 
-\textbf{Per-site interaction analysis.}  For each site in each dataset, we
-fit a logistic regression with an age $\times$ comorbidity interaction term.
-For the 4CE data (no individual records), we fit weighted meta-regressions
-with interaction terms on site-level demographics.
+\textbf{Site definitions.}  Treating-unit state, state of residence,
+health-care sector, and municipality of residence at four registered
+size thresholds, each paired against the states those municipalities
+nest in on the same records, with the bootstrap clustered on state of
+residence.  A quota-matched reassignment draws pseudo-sites that
+reproduce every real state's size and count aged 70 or older exactly,
+using no other record field, over 500 replications.
 
-\textbf{Multivariate consistency test.}  We computed per-site Pearson
-correlation matrices (6 binary variables for CDC and Mexico; 30 Elixhauser
-comorbidity categories for 4CE) and measured global consistency as the mean
-sum of squared pairwise differences across all site pairs, normalized by
-shared coverage.  Significance was assessed by 500 within-dimension
-permutations.  The test's power depends on heterogeneous coverage
-(Supplement~A).
+\textbf{Pooling.}  Per-site logistic coefficients were pooled by
+inverse-variance meta-analysis under common-effect, DerSimonian--Laird
+and REML with Hartung--Knapp specifications, and compared against
+one-stage fits with state fixed effects, a random intercept and a random
+slope.  Inverse-variance meta-analysis of separately fitted coefficients
+targets a precision-weighted summary and is not distributed score
+aggregation, so the agreement reported here is an empirical result on
+these data rather than a preservation property.
 
-\textbf{4CE meta-analysis.}  Per-site log-PMI estimates were pooled using
-fixed-effects (inverse-variance), DerSimonian--Laird random-effects, and
-influence-function methods.  Sites with $\text{SE} \geq 0.5$ were excluded
-from primary analyses.  Meta-regression of log-PMI on four site-level
-demographics used weighted least squares.  E-values \cite{vanderweele2017}
-assess sensitivity to unmeasured confounding.
+\textbf{The state-level model.}  A binomial random-intercept model over
+cells of state, age, sex and the nine comorbidities, carrying the
+state's standardized elderly share alongside the record-level
+covariates, fitted by \texttt{lme4::glmer} at 15 adaptive
+Gauss--Hermite nodes and reproduced independently by our own quadrature
+implementation.  Eleven numerical acceptance criteria, fixed before the
+fit, govern whether the result is reported as evaluable.
 
-\subsection{Multiple testing and analysis provenance}
+\subsection{Registration and multiplicity}
 
-Five primary analyses were pre-specified: ecological and individual-level
-regressions on CDC and Mexico data, plus the 4CE fixed-effects PMI.
-Twelve secondary 4CE analyses (meta-regression moderators, consistency
-tests, interaction tests, PNS negative control, temporal trend) were
-developed during exploratory analysis.
-Benjamini--Hochberg FDR correction~\cite{benjamini1995fdr} at $q = 0.05$
-was applied within the 18-test interaction family; of 3 age--mortality
-interaction tests, only the 60- and 90-day values survive.  All null
-results are reported (PNS PMI $= 1.04$; consistency test degenerate on
-CDC and Mexico; temporal trend $p = 0.16$).  Full multiple testing
-accounting appears in Supplement~Table~S1.
-
-Ten supplementary analyses (S1--S10) were pre-registered via a frozen
-protocol (commit \texttt{97f7094}) before any results were examined;
-two falsification criteria fired (Supplement~B).  No analyses were
-conducted and suppressed.
+Ten supplementary analyses were registered in a protocol frozen at
+commit \texttt{97f7094} before any of them was run, each tagged by
+whether its outcome was already known, with falsification criteria and
+the main-text and supplement split fixed in advance.  The site
+definitions and the covariate ladder were registered in a second
+protocol frozen at commit \texttt{a38196b}, which records the
+state-level discrepancy already known at that point and states that no
+grouping other than the treating unit's state had been run.  Both
+protocols, the implementation amendments and a correction record are in
+the repository.  All registered analyses are reported regardless of
+outcome.
 
 \subsection{Reproducibility}
 
@@ -712,76 +548,82 @@ The CDC data is publicly downloadable from \texttt{data.cdc.gov} (dataset
 
 \section{Limitations}
 
-\textbf{Pseudo-sites are not hospitals.}  CDC race/ethnicity pseudo-sites
-differ from hospital-based consortium sites: they are not geographically
-localized, and the confounders (socioeconomic disparities, healthcare
-access) differ from hospital-based confounders (referral patterns, coding
-practices, ICU capacity).  Race and ethnicity are social
-constructs~\cite{subramanian2009revisiting}; we use CDC categories because
-they produce groups with distinct age distributions, the structural property
-needed to demonstrate ecological bias.  Mexico's 32 real geographic sites
-partially address this limitation; the two datasets together bracket the
-range of ecological bias severity.
+\textbf{The discrepancy is indexed to a model.}  It is the part of the
+cross-site rate relationship that a specified record-level model does
+not reproduce, so it falls as that model is enriched and a model with a
+free term per state removes it.  The design measures state-structured
+lack of fit; it does not measure a model-free quantity of ecological
+bias, and no specification here is established as correct.
 
-\textbf{4CE data is aggregate only.}  All 4CE analyses use site-level
-summaries.  The age $\times$ mortality interaction coefficients
-($\beta = +32$ to $+38$) are likely inflated by Type~M
-error~\cite{gelman2014typeMS} from $\sim$20 sites.
+\textbf{The residual is not attributable.}  What survives the richest
+registered model contains unmeasured composition, ascertainment and
+coding differences between states, epidemic timing, misspecification,
+and any effect of where a patient was treated.  These data cannot
+separate them, and the state-level association in the random-intercept
+model is a residual model-based association rather than a contextual
+effect.
 
-\textbf{Consistency tests detect problems, not answers.}  The test flags
-unreliable pooling; it cannot recover the individual-level effect.
-Its power requires heterogeneous coverage, present in the 4CE data but
-absent in the CDC and Mexico data (Supplement~A).
+\textbf{The quota-matched reassignment is a control.}  Its expectation
+is zero by the fitted model's own estimating equations, so it confirms
+that the discrepancy requires more than site count, site size and the
+allocation of elderly share.  It is not evidence that geography causes
+what remains, and it does not hold other compositional variables fixed.
 
-\textbf{Limited variables.}  The CDC dataset has 12 variables; Mexico has
-18; hospital datasets such as N3C have hundreds.  Our analysis captures
-the direction of the problem but underestimates its magnitude.
+\textbf{Finer units are measured less precisely.}  The discrepancy
+falls monotonically as the municipality size threshold is relaxed, and
+elderly share is estimated from the same records, so small units carry
+more measurement error in the regressor.  The grouped-binomial version
+is reported beside the unweighted one for that reason.
 
+\textbf{One surveillance system, and not a network.}  The architectures
+are reproduced on a single national record set rather than observed in
+a live federation, which is what makes both sides of the comparison
+computable and also what limits it: a real network differs in local
+model specification, coding harmonization and cell counts, and the
+agreement between pooling strategies reported here is conditional on
+those being adequate.  The source carries record identifiers and no
+person identifiers, so repeat presentations cannot be collapsed.
 
 \section{Conclusion}
 
-Ecological regression on 42 million COVID-19 patient records from two
-countries detects statistically significant age--mortality relationships in
-both datasets, but the ecological coefficients (linear slopes of $+0.55$
-and $+1.31$) are incommensurable with the individual-level truth
-(multiplicative odds ratios of 9.9 and 11.3).  The 4CE consortium's
-neurological findings---where meta-analytic methods diverge by 350-fold
-and elderly proportion explains most between-site variation---illustrate
-the clinical stakes: pooled estimates from this dataset should be treated
-as hypotheses, not as established effects.
+Across 3\,993\,464 confirmed COVID-19 case records in 32 treating-unit
+states, a regression on shared site rates gives a slope of $+1.3105$
+percentage points of case fatality per point of elderly share, while
+the record-level model registered for these data implies $+0.4537$ over
+the same sites.  The difference of $+0.8568$ falls as the record-level
+model is enriched and remains $+0.5941$ under the richest specification
+registered, and it is not reproduced by site count, site size or the
+allocation of elderly share.  Coefficients pooled from site-level fits
+reproduce the record-level association to the fourth decimal of the log
+odds ratio when specifications are aligned.
 
-Structural diagnostics offer partial help.  The consistency test detects
-coordinated heterogeneity on the 4CE data ($z = 25$) but is degenerate on
-homogeneous-coverage datasets (CDC, Mexico).  Per-site interaction analysis
-detects effect modification across all three datasets, confirming that
-pooling loses information about how age and comorbidity interact.
-
-The practical recommendation: when heterogeneity is extreme, do not trust the
-average.  When individual data is unavailable, test the structure.  When
-neither is possible, report site-level findings explicitly as ecological
-summaries that may not hold for individual patients---and design the next
-study to collect individual-level data.
-
-
-\appendix
+Site rates and site coefficients are therefore not interchangeable
+summaries, and the discrepancy between them is invisible from the
+summaries alone.  A network sharing rates should state the
+record-level model its inference assumes, and share per-site
+coefficients where an individual-level association is the target.
 
 \section{Supplementary Materials}
 \label{app:supplementary}
 
-The following supplementary materials are available online:
-(A)~Why the consistency test is degenerate under homogeneous
-coverage, with empirical confirmation on all three datasets;
-(B)~Ten pre-registered supplementary
-analyses (S1--S10) with falsification criteria, specified in a frozen
-protocol (commit \texttt{97f7094}) before any results were examined---two
-falsification criteria fired (S2: Mundlak decomposition, S5: positive
-control), both narrowing the CDC demonstration from ``confounding-driven
-bias'' to ``small-$k$ uninformativeness'' without affecting the Mexico
-or 4CE results; (C)~Power simulation details;
-(D)~Duncan--Davis ecological-inference bounds; (E)~Leave-one-site-out
-stability analysis; (F)~Consistency-test calibration under the null
-(FPR $= 4.1\%$ at $|z| > 2$, well-calibrated).
-
+Available online:
+(A)~the two frozen protocols, the implementation amendments and the
+correction record, with a provenance table giving for each analysis its
+status, what was known when it was specified, and the commit that froze
+it;
+(B)~an accounting table reconciling every denominator the paper uses,
+and a table of superseded values with the cause of each;
+(C)~the ten registered supplementary analyses with their falsification
+criteria and outcomes, reported regardless of result;
+(D)~per-state estimates, the binomial and population-weighted
+sensitivities beside the unweighted primary fit, and the municipality
+analysis at all four registered size thresholds;
+(E)~the full numerical diagnostics for the state-level model, including
+the independent reimplementation and the eleven acceptance criteria;
+(F)~two further record sets analyzed under the same design, United
+States case surveillance grouped by race and ethnicity and the 4CE
+consortium's aggregate neurological data, which are not part of the
+analysis reported here.
 
 \section*{Declarations}
 
@@ -832,7 +674,7 @@ validated by the author.  No AI tool is listed as an author.
 \subsection*{Acknowledgements}
 Not applicable.
 
-\bibliographystyle{unsrtnat}
+\bibliographystyle{vancouver}
 \bibliography{references}
 
 \end{document}
