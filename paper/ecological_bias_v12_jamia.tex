@@ -39,20 +39,21 @@ Email: \texttt{elliot@elliottower.ai}}
 \begin{abstract}
 \noindent\textbf{Objective:}
 Federated networks share either site-level rates or coefficients from
-site-level models, and treat these as interchangeable.  We tested whether
-they estimate the same quantity.
+site-level models, and treat these as interchangeable.  A regression
+across site rates absorbs every between-site difference that tracks the
+regressor, so it need not recover the association a coefficient
+estimates within sites.  We tested whether the two agree.
 
 \noindent\textbf{Materials and Methods:}
 We analyzed 3\,993\,464 confirmed COVID-19 case records from Mexico's
-national surveillance system in 32 treating-unit states.  The observed
+surveillance system in 32 treating-unit states.  The observed
 ecological slope regressed state case fatality on the share aged 70 or
 older.  The model-implied slope averaged individual-level logistic
 predictions within each state and regressed those on the same share;
 their difference is the ecological discrepancy.  We varied the
-individual-level model across six prespecified specifications of
-increasing adjustment, and the site definition across residence state,
-health-care sector, municipality, and a constrained random partition
-holding state size and elderly count fixed.
+individual-level model across six prespecified specifications, and the
+site definition across residence state, sector, municipality, and a
+random partition holding each state's size and elderly count fixed.
 
 \noindent\textbf{Results:}
 Under the prespecified three-covariate model the observed and
@@ -60,18 +61,16 @@ model-implied slopes were 1.31 and 0.45 percentage points of case
 fatality per point of elderly share (difference 0.86; bootstrap 95\% CI
 0.50--1.30).  The difference fell as adjustment increased but remained
 0.59 (0.21--1.07) under the richest specification.  On matched records it
-was smaller for municipalities than for states of residence (0.47 vs
-1.01), and it was 0.00 under the random partition.  One-stage and
-two-stage estimators agreed to 0.0007 in the log odds ratio when their
-specifications were aligned.
+was 0.47 across municipalities against 1.01 across their states of
+residence, and 0.00 under the random partition.  Aligned one-stage and two-stage estimators
+agreed to 0.0007 in the log odds ratio.
 
 \noindent\textbf{Discussion:}
 The discrepancy is defined relative to a specified individual-level model
 and does not identify a contextual effect.
 
 \noindent\textbf{Conclusion:}
-Site rates and site coefficients estimate different quantities.  Networks
-sharing rates should name the individual-level model their inference
+Networks sharing rates should name the individual-level model their inference
 assumes, and share per-site coefficients when an individual-level
 association is the target.
 \end{abstract}
@@ -169,6 +168,25 @@ difference between them, $+0.8568$ (bootstrap 95\% CI over states
 $0.4956$ to $1.3027$), is the discrepancy a network sharing rates would
 carry and a network sharing coefficients would not.  The registered
 falsification criterion, that the two agree within 20\%, is not met.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.92\textwidth]{figures/fig1_two_slopes.pdf}
+\caption{Each point is one of Mexico's 32 treating-unit states,
+3\,993\,464 confirmed COVID-19 case records.  Filled points are the
+state's observed case fatality; open points are the rate implied by
+averaging a record-level logistic model's predicted probabilities over
+that state's own patients, under the registered model carrying age 70
+or older, sex and any of nine comorbidities.  Both are regressed on the
+same horizontal axis over the same 32 points, so the two slopes are
+comparable: 1.311 observed against 0.454 implied.  The observed rates
+scatter around their fit while the implied rates lie close to theirs,
+because the implied rates carry only what the record-level model
+attributes to its covariates.  The vertical distance between the two
+lines is the ecological discrepancy, 0.857 percentage points of case
+fatality per point of elderly share at the mean.}
+\label{fig:slopes}
+\end{figure}
 
 Sharing coefficients instead reproduces the record-level association
 (Table~\ref{tab:estimators}).  Estimators separate by the quantity they
