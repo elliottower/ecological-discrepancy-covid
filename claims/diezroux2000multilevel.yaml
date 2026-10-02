@@ -1,0 +1,7 @@
+source:
+  citation: diezroux2000multilevel
+  doi: 10.1146/annurev.publhealth.21.1.171
+  local: ../citations-library/pdfs/doi-10-1146-annurev-publhealth-21-1-171.abstract.txt
+  note: Paywalled, and no open-access location is indexed. The artifact to pin against is the
+    abstract, saved as plain text, so a quotation resolves against the abstract and not the article.
+claims: {}

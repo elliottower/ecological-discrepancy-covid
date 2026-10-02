@@ -43,7 +43,7 @@ fee-waiver*
 # provenance ledger (see results-cli): the chain is committed, so a record is
 # evidence outside this laptop; only the lock file is local.
 .results/*.lock
-.results/*provenance-lock
+*.provenance-lock
 
 # regenerable intermediates
 paper/analyses/results/mexico_cells.csv

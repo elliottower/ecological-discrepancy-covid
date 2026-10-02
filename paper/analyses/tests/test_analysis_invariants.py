@@ -919,6 +919,28 @@ def test_the_comparison_tells_a_flat_surface_from_an_optimizer_that_stopped(tmp_
                                                                                 abs=1e-9)
 
 
+def test_a_float_of_difference_is_not_an_optimizer_that_stopped_short(tmp_path):
+    """The real H6 fit trips a bare inequality: lme4 scores 4e-06 higher on -751691.
+
+    One implementation always stops a float ahead of the other, so a comparison with no
+    tolerance reports a shortfall on every run and means nothing by meaning always.
+    """
+    design, deaths, n, groups = grouped_binomial(n_groups=30, cells_per_group=10)
+    fit = glmm.fit_random_intercept(design, deaths, n, groups, errors=False)
+    names = ["intercept", "elderly_share_z"]
+
+    settled = {"completed": True, "estimate": list(fit["beta"]),
+               "random_intercept_sd": fit["sigma"]}
+    nudged = np.asarray(fit["beta"], dtype=float) + np.array([0.0, 1e-7])
+    parameters = np.concatenate([nudged, [np.log(fit["sigma"])]])
+    hair = {**fit, "beta": nudged, "params": parameters,
+            "log_likelihood": float(fit["model"].loglik(parameters, warm_start=False))}
+    close = s12.compare_implementations(settled, hair, names)
+    assert close["our_estimate_scores_higher_by"] < 0          # it did score lower
+    assert abs(close["our_estimate_scores_higher_by"]) < s12.OPTIMIZER_SHORTFALL
+    assert close["our_optimizer_stopped_short"] is False       # and that does not count
+
+
 def test_the_comparison_reports_nothing_when_a_fit_is_missing():
     assert s12.compare_implementations({"completed": False}, None, [])["comparable"] is False
     assert s12.compare_implementations(

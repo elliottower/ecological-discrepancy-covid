@@ -1,0 +1,14 @@
+source:
+  citation: subramanian2009revisiting
+  doi: 10.1093/ije/dyn359
+  url: https://www.ncbi.nlm.nih.gov/pmc/articles/2663721
+  local: ../citations-library/pdfs/doi-10-1093-ije-dyn359.abstract.txt
+  sha256: 412ca71964793890f83f406263db910c2e7a61608dbe682ccb129630ce02790b
+  note: ABSTRACT ONLY. PubMed Central holds metadata and the abstract for PMC2663721 and no full text
+    is deposited, so quotations resolve against the abstract rather than the article.
+claims:
+  state-variation-not-explained-by-composition:
+    quotes:
+    - exact: the substantial state variations in illiteracy could not be accounted by the states' race/nativity
+        composition
+      section: Abstract

@@ -21,7 +21,9 @@
 \setlength{\abovecaptionskip}{8pt}
 \setlength{\belowcaptionskip}{4pt}
 
-\title{Federated site-level pooling estimates a different quantity\\than patient-level analysis: ecological bias across\\42 million COVID-19 records}
+\title{Site-level rates and site-level coefficients estimate different\\
+quantities: an individual-level benchmark for federated analysis\\
+of COVID-19 surveillance data}
 
 \author{Elliot Tower, M.S.\\
 \textit{Independent Researcher}\\[6pt]
@@ -36,48 +38,46 @@ Email: \texttt{elliot@elliottower.ai}}
 
 \begin{abstract}
 \noindent\textbf{Objective:}
-Site-level pooling in federated networks produces a different quantity
-than the patient-level effect---not a noisier estimate of the same one.
-We quantify this ecological bias across three datasets and evaluate
-structural diagnostics to flag unreliable pooling without
-individual-level data.
+Federated networks share either site-level rates or coefficients from
+site-level models, and treat these as interchangeable.  We tested whether
+they estimate the same quantity.
 
 \noindent\textbf{Materials and Methods:}
-We compared ecological regression with individual-level
-logistic regression on 42 million COVID-19 records
-(38 million CDC records, 7 racial/ethnic pseudo-sites) and Mexico
-(4 million cases, 32 states).  We applied meta-analytic methods
-and structural diagnostics to the 4CE consortium's neurological COVID-19
-dataset (22,000 patients, 21 hospitals, 6 countries).
+We analyzed 3\,993\,464 confirmed COVID-19 case records from Mexico's
+national surveillance system in 32 treating-unit states.  The observed
+ecological slope regressed state case fatality on the share aged 70 or
+older.  The model-implied slope averaged individual-level logistic
+predictions within each state and regressed those on the same share;
+their difference is the ecological discrepancy.  We varied the
+individual-level model across six prespecified specifications of
+increasing adjustment, and the site definition across residence state,
+health-care sector, municipality, and a constrained random partition
+holding state size and elderly count fixed.
 
 \noindent\textbf{Results:}
-In both datasets, ecological regression detects a significant age--mortality
-relationship, but the ecological coefficient (a linear slope)
-is incommensurable with the individual-level truth (a multiplicative odds
-ratio).  CDC: ecological $\beta = +0.55$ ($p = 0.02$) vs.\ individual
-OR $= 9.9$ ($p < 0.001$).  Mexico: ecological $\beta = +1.31$
-($p < 0.0001$) vs.\ individual OR $= 11.3$ ($p < 0.001$).  In the 4CE
-dataset, meta-analytic methods diverge by 350-fold ($I^2 = 99.8\%$), and
-a multivariate consistency test detects coordinated heterogeneity
-($z = 25$, $p < 0.0001$) invisible to standard tests.
+Under the prespecified three-covariate model the observed and
+model-implied slopes were 1.31 and 0.45 percentage points of case
+fatality per point of elderly share (difference 0.86; bootstrap 95\% CI
+0.50--1.30).  The difference fell as adjustment increased but remained
+0.59 (0.21--1.07) under the richest specification.  On matched records it
+was smaller for municipalities than for states of residence (0.47 vs
+1.01), and it was 0.00 under the random partition.  One-stage and
+two-stage estimators agreed to 0.0007 in the log odds ratio when their
+specifications were aligned.
 
 \noindent\textbf{Discussion:}
-The ecological fallacy arises from the analysis architecture---how
-site-level data is aggregated---not from the disease.
-Any federated network faces this distortion whenever sites differ in
-patient composition, regardless of disease domain.
+The discrepancy is defined relative to a specified individual-level model
+and does not identify a contextual effect.
 
 \noindent\textbf{Conclusion:}
-Site-level pooling produces coefficients incommensurable with
-patient-level effects.  Federated networks should adopt individual-level
-estimation and treat pooled summaries as hypotheses
-requiring confirmation.  Two structural
-diagnostics---a multivariate consistency test and per-site interaction
-analysis---can flag unreliable pooling without individual records.
+Site rates and site coefficients estimate different quantities.  Networks
+sharing rates should name the individual-level model their inference
+assumes, and share per-site coefficients when an individual-level
+association is the target.
 \end{abstract}
 
-\noindent\textbf{Keywords:} ecological fallacy, federated analysis,
-electronic health records, health informatics, COVID-19, aggregation bias
+\noindent\textbf{Keywords:} ecological fallacy; multicenter studies as topic; data aggregation;
+electronic health records; COVID-19
 
 
 \section{Background and Significance}
