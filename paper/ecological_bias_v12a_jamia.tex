@@ -22,7 +22,7 @@
 \setlength{\belowcaptionskip}{4pt}
 
 \title{Site-level rates and site-level coefficients estimate different\\
-quantities: an individual-level benchmark for federated analysis\\
+quantities: a record-level benchmark for federated analysis\\
 of COVID-19 surveillance data}
 
 \author{Elliot Tower, M.S.\\
@@ -48,10 +48,10 @@ coefficient estimates.  We tested whether the two agree.
 We analyzed 3\,993\,464 confirmed COVID-19 case records from Mexico's
 surveillance system, 32 treating-unit states.  The observed
 ecological slope regressed state case fatality on the share aged 70 or
-older.  The model-implied slope averaged individual-level logistic
+older.  The model-implied slope averaged record-level logistic
 predictions within each state and regressed those on the same share.
 Their difference is the ecological discrepancy.  We varied the
-individual-level model across six prespecified specifications and the
+record-level model across six prespecified specifications and the
 site definition across residence state, sector, municipality, and a
 random partition holding each state's size and elderly count fixed.
 
@@ -66,12 +66,12 @@ residence, and 0.00 under the random partition, by construction.  Aligned one-st
 agreed to 0.0007 in the log odds ratio.
 
 \noindent\textbf{Discussion:}
-The discrepancy is defined relative to a specified individual-level model
+The discrepancy is defined relative to a specified record-level model
 and does not identify a contextual effect.
 
 \noindent\textbf{Conclusion:}
-Networks sharing rates should name the individual-level model their inference
-assumes, and share coefficients where an individual-level
+Networks sharing rates should name the record-level model their inference
+assumes, and share coefficients where a record-level
 association is the target.
 \end{abstract}
 
@@ -93,7 +93,7 @@ well understood \cite{greenland1992ecological,greenland2001ecologic}
 and formal frameworks for ecological inference exist
 \cite{king1997ecological,wakefield2003ecological,wakefield2008ecologic},
 but how far a working federated analysis departs from the
-individual-level association it is read as estimating has rarely been
+record-level association it is read as estimating has rarely been
 measured on data where both can be computed.
 
 What a network shares is not one choice but several, and they do not
@@ -216,7 +216,7 @@ plus calendar month of symptom onset.  Estimation used
 health-care sector, and municipality of residence at four registered
 size thresholds, each paired against the states those municipalities
 nest in on the same records, with the bootstrap clustered on state of
-residence.  A quota-matched reassignment draws pseudo-sites that
+residence.  A matched random partition draws pseudo-sites that
 reproduce every real state's size and count aged 70 or older exactly,
 using no other record field, over 500 replications.
 
@@ -273,10 +273,10 @@ share of records aged 70 or older at $+1.3105$ percentage points per
 point of elderly share (SE $0.2373$, $R^2 = 0.50$).  Averaging the
 registered record-level model's predicted probabilities within each
 state and regressing those averages on the same share gives $+0.4537$.
-The two are the same kind of quantity over the same 32 points, so the
+Both are unweighted linear projections of a state rate on state
+elderly share over the same 32 states (Figure~\ref{fig:slopes}), so the
 difference between them, $+0.8568$ (bootstrap 95\% CI over states
-$0.4956$ to $1.3027$), is the discrepancy a network sharing rates would
-carry and a network sharing coefficients would not.  The registered
+$0.4956$ to $1.3027$), is the ecological discrepancy under the registered model.  The registered
 falsification criterion, that the two agree within 20\%, is not met.
 
 \begin{figure}[t]
@@ -289,12 +289,9 @@ averaging a record-level logistic model's predicted probabilities over
 that state's own patients, under the registered model carrying age 70
 or older, sex and any of nine comorbidities.  Both are regressed on the
 same horizontal axis over the same 32 points, so the two slopes are
-comparable: 1.311 observed against 0.454 implied.  The observed rates
-scatter around their fit while the implied rates lie close to theirs,
-because the implied rates carry only what the record-level model
-attributes to its covariates.  The vertical distance between the two
-lines is the ecological discrepancy, 0.857 percentage points of case
-fatality per point of elderly share at the mean.}
+comparable: 1.311 observed against 0.454 implied.  Their difference,
+0.857 percentage points of case fatality per point of elderly share, is
+the ecological discrepancy.}
 \label{fig:slopes}
 \end{figure}
 
@@ -379,8 +376,7 @@ residence and $+0.7657$ across the 11 health-care sectors.  On the
 3\,665\,523 records retained by the municipality size rule, it is
 $+0.4689$ across 385 municipalities against $+1.0087$ across the states
 those municipalities nest in, a paired difference of $-0.5398$
-(state-clustered bootstrap $-1.1642$ to $-0.1299$).  Finer units carry
-less of it, consistent with what is reported for nested residential
+(state-clustered bootstrap $-1.1642$ to $-0.1299$).  The discrepancy is smaller at finer grain, consistent with what is reported for nested residential
 geographies \cite{best2001ecological,lancaster2006reducing}, although
 elderly share is measured from the same records and is estimated less
 precisely in small units.
@@ -395,9 +391,9 @@ removes is the gap between them.  The expectation of that gap is zero
 under this scheme, because the record-level model is fitted by maximum
 likelihood and its residuals sum to zero within the strata the quotas
 hold fixed, so the result is a check on the construction rather than
-evidence about geography.  What it establishes is that site count, site
-size and the allocation of elderly share across sites are not sufficient
-to produce the discrepancy.
+evidence about geography.  It follows that site count, site size and
+the allocation of elderly share cannot by themselves produce the
+discrepancy, and that the comparison returns zero where it should.
 
 \begin{table}[t]
 \centering
@@ -416,7 +412,7 @@ State of residence         & 32  & 1.305 & 0.455 & 0.850 \\
 Health-care sector         & 11  & 1.193 & 0.428 & 0.766 \\
 Municipality ($\geq$1000 records) & 385 & ---   & ---   & 0.469 \\
 \;\;paired states of residence    & 32  & ---   & ---   & 1.009 \\
-Size- and share-matched partition & 32  & 0.332 & 0.332 & 0.000 \\
+Matched random partition & 32  & 0.332 & 0.332 & 0.000 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -432,9 +428,9 @@ random-intercept standard deviation of $0.2682$.  The fit meets all
 eleven numerical acceptance criteria fixed before it was run, and a
 second implementation of the same quadrature, written separately and
 run on the same cells, reproduces its coefficients to
-$7.7\times10^{-5}$.  Because the coefficient is a one-degree-of-freedom
-contrast across 32 clusters and $\sigma$ exceeds it, this is a residual
-model-based state-level association and not a contextual effect.
+$7.7\times10^{-5}$.  The association is estimated from 32 clusters and conditions
+on the measured record-level covariates only, so it is a model-based
+residual association and not an identified contextual effect.
 
 \section{Discussion}
 
@@ -443,7 +439,7 @@ model-based state-level association and not a contextual effect.
 
 A regression across site rates absorbs any between-site variation in the
 outcome that correlates with the regressor, whatever produces it.  The
-slope implied by a record-level model carries only what that model
+slope implied by a record-level model includes only what that model
 attributes to the covariates it holds, averaged over each site's own
 covariate distribution.  Their difference is therefore everything the
 site rates contain that the record-level model does not reproduce, and
@@ -465,8 +461,7 @@ probabilities rather than from a conditional coefficient; it does bear
 on any attempt to read the record-level odds ratio as the quantity the
 ecological slope is estimating.
 
-The distortion follows from the analysis architecture rather than from
-the disease.  COVID-19 serves here because record-level data are
+Nothing in the comparison is specific to COVID-19.  COVID-19 serves here because record-level data are
 available for both halves of the comparison, which is what makes the
 benchmark computable at all; the same structure applies to drug-safety
 surveillance, federated genomic association, and any multi-site study
@@ -480,7 +475,7 @@ privacy.  The rate regression estimates a relationship between
 site-level quantities; the coefficient estimates a within-site
 association among records.  On these data the second is recoverable from
 shared summaries to within $0.0007$ in the log odds ratio, and the
-first carries an additional $+0.8568$ that no record-level model we
+first includes an additional $+0.8568$ that no record-level model we
 registered reproduces.  Which object a network shares therefore
 determines what its central analysis can estimate, and the choice is an
 estimand question before it is a privacy or engineering one.
@@ -494,7 +489,7 @@ routes avoid the substitution.
 
 \textbf{Federated regression.}
 Fed-GLMM~\cite{yan2023fedglmm} and
-DataSHIELD~\cite{banerjee2022dssurvival} enable individual-level estimation
+DataSHIELD~\cite{banerjee2022dssurvival} enable record-level estimation
 while sharing only summary statistics: sites run a standardized script
 locally and share coefficients, preserving privacy without aggregation
 bias.
@@ -522,7 +517,7 @@ A pooled odds ratio of 11.73 is the right answer to the question it
 answers; the prediction interval of 8.43 to 16.32 is what tells a
 reader whether that is the question they have.
 
-\paragraph{Share coefficients when the target is an individual-level
+\paragraph{Share coefficients when the target is a record-level
 association.}  The agreement in Table~\ref{tab:estimators} holds for
 compatible local models, harmonized coding and adequate cell counts at
 each site.  A network has to verify those rather than assume them.
@@ -553,9 +548,10 @@ them.
 
 \textbf{Finer units are measured less precisely.}  Elderly share is
 estimated from the same records, so the municipality comparison
-confounds geographic grain with measurement error in the regressor; the
-grouped-binomial fit is reported beside the unweighted one for that
-reason.
+confounds geographic grain with measurement error in the regressor.  The
+grouped-binomial fit reported beside the unweighted one addresses
+outcome variance in small municipalities, not error in the regressor,
+which nothing here corrects.
 
 \textbf{The architectures are reproduced, not observed.}  A live
 network differs in local model specification, coding harmonization and
