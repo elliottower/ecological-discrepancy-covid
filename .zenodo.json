@@ -1,7 +1,7 @@
 {
-  "title": "Ecological Bias in COVID Epidemiology",
+  "title": "Site-level rates and site-level coefficients estimate different quantities: a record-level benchmark for federated analysis of COVID-19 surveillance data",
   "upload_type": "software",
-  "description": "Analysis of ecological bias in COVID-19 epidemiological studies.",
+  "description": "Federated analysis networks share one of two things about each site: a rate, or a coefficient from a model the site fitted locally. These are routinely treated as interchangeable summaries of the same association. They are not, and we measure how far apart they fall on a record set where both can be computed.",
   "creators": [
     {
       "name": "Tower, Elliot",
@@ -10,13 +10,15 @@
   ],
   "license": "CC-BY-4.0",
   "keywords": [
-    "ecological bias",
-    "COVID-19",
-    "epidemiology"
+    "ecological fallacy",
+    "multicenter studies",
+    "data aggregation",
+    "electronic health records",
+    "COVID-19"
   ],
   "related_identifiers": [
     {
-      "identifier": "https://github.com/elliottower/ecological-bias-covid",
+      "identifier": "https://github.com/elliottower/ecological-discrepancy-covid",
       "relation": "isSupplementTo",
       "scheme": "url"
     }

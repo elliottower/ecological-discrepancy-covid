@@ -1,6 +1,6 @@
 """Build the Zenodo archive for this repository.
 
-Writes submission/zenodo/ecological-bias-covid.zip from the tracked source,
+Writes submission/zenodo/ecological-discrepancy-covid.zip from the tracked source,
 excluding everything a public archive must not carry.  Refuses to overwrite an
 existing archive, and asserts that no excluded path leaked in.
 
@@ -11,7 +11,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-OUT = ROOT / "submission" / "zenodo" / "ecological-bias-covid.zip"
+OUT = ROOT / "submission" / "zenodo" / "ecological-discrepancy-covid.zip"
 
 # Excluded by directory prefix.  The manuscript is deposited as its own PDF, so
 # paper/ adds nothing a reader needs and carries editorial correspondence and

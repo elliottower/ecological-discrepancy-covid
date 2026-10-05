@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
-title: "Ecological Bias Distorts Effect Sizes in Federated COVID-19 Analysis"
+title: "Site-level rates and site-level coefficients estimate different quantities: a record-level benchmark for federated analysis of COVID-19 surveillance data"
 authors:
   - family-names: Tower
     given-names: Elliot
@@ -8,5 +8,5 @@ authors:
     orcid: "https://orcid.org/0000-0001-7004-8884"
 type: software
 license: MIT
-repository-code: "https://github.com/elliottower/ecological-bias-covid"
+repository-code: "https://github.com/elliottower/ecological-discrepancy-covid"
 doi: "10.5281/zenodo.21252371"
