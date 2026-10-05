@@ -150,6 +150,11 @@ DOC = rf"""\documentclass[11pt]{{article}}
 
 \renewcommand{{\arraystretch}}{{1.2}}
 
+% S-prefixed numbers, so the supplement's tables cannot collide with the
+% manuscript's when a submission system concatenates the two files.
+\renewcommand{{\thetable}}{{S\arabic{{table}}}}
+\renewcommand{{\thefigure}}{{S\arabic{{figure}}}}
+
 \title{{Supplementary Materials\\[6pt]
 \large Ecological discrepancy under a specified record-level model:
 {thousands(n_records)} Mexican COVID-19 case records in 32 treating-unit states}}
