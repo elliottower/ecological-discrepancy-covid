@@ -18,7 +18,7 @@ import os
 import modal
 
 ANALYSES = os.path.join(os.path.expanduser("~"),
-                        "Documents/GitHub/ecological-bias-covid/paper/analyses")
+                        "Documents/GitHub/ecological-discrepancy-covid/paper/analyses")
 # `paths.py` derives the project root from where it sits, so the container mirrors the
 # repository's shape rather than a flat directory.
 REMOTE = "/root/repo/paper/analyses"

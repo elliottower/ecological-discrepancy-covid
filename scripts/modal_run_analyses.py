@@ -29,7 +29,7 @@ from datetime import datetime, timezone
 import modal
 
 ANALYSES = os.path.join(os.path.expanduser("~"),
-                        "Documents/GitHub/ecological-bias-covid/paper/analyses")
+                        "Documents/GitHub/ecological-discrepancy-covid/paper/analyses")
 REMOTE = "/root/repo/paper/analyses"
 REMOTE_TESTS = REMOTE + "/tests"
 # Never copied, so never in the manifest the container checks itself against.
