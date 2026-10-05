@@ -51,3 +51,6 @@ paper/analyses/results/mexico_per_state.csv
 paper/analyses/results/s12_stage_shards/
 paper/analyses/results/s12_bootstrap_shards/
 paper/analyses/logs/
+
+# Corresponding-author contact details — public repo, never tracked
+paper/title_contact.tex

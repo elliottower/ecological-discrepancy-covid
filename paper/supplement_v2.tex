@@ -1,0 +1,337 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage{setspace}
+\doublespacing
+\usepackage{lineno}
+\linenumbers
+
+\renewcommand{\arraystretch}{1.2}
+
+\title{Supplementary Materials\\[6pt]
+\large Ecological discrepancy under a specified record-level model:
+3\,993\,464 Mexican COVID-19 case records in 32 treating-unit states}
+
+\author{Elliot Tower}
+
+\date{}
+
+\begin{document}
+\maketitle
+
+\setcounter{section}{0}
+\renewcommand{\thesection}{Supplement~\Alph{section}}
+
+This document is generated from the analysis result files by
+\texttt{paper/make\_supplement.py}.  Every number below is read from those
+files at build time rather than transcribed, so a rerun of an analysis and a
+rebuild of this document cannot disagree.
+
+\section{Registration and Provenance}
+\label{supp:registration}
+
+Two protocols were frozen before the analyses they govern.  The first,
+\texttt{ANALYSIS\_PROTOCOL.md}, was frozen at commit \texttt{97f7094} and
+specifies ten supplementary analyses, each with a falsification criterion and
+a main-text or supplement placement fixed in advance.  The second,
+\texttt{ANALYSIS\_PROTOCOL\_2\_}\-\texttt{SITE\_DEFINITIONS.md}, was frozen at commit
+\texttt{a38196b} and tagged \texttt{registration-s11-s12}; it governs the
+site definitions and the covariate ladder, records the state-level discrepancy
+already known at that point, and states that no grouping other than the
+treating unit's state had been run.
+
+\begin{sloppypar}
+Two further records accompany them.
+\texttt{IMPLEMENTATION\_AMENDMENT\_2026-09-29.md} records changes to the
+implementation that do not alter the registered design, and
+\texttt{PROTOCOL\_CORRECTION\_ADDENDUM.md} records a correction to the
+protocol itself.  Both are in the repository and both are reachable from the
+ledger.
+\end{sloppypar}
+
+\begin{table}[h]
+\centering
+\caption{Registered analyses and the commit that froze each.}
+\vspace{0.5\baselineskip}
+\begin{tabular}{lll}
+\toprule
+Analysis & Frozen at & Outcome known when specified \\
+\midrule
+Ten supplementary analyses (S1--S10) & \texttt{97f7094} & tagged per analysis \\
+Site definitions (S11) & \texttt{a38196b} & state-level discrepancy only \\
+Covariate ladder (S12) & \texttt{a38196b} & state-level discrepancy only \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{sloppypar}
+The analysis runs recorded in the ledger carry the snapshot digest
+\texttt{25ccc890d190bf66\ldots}, and each names the
+commit it ran at and whether the analysis tree was clean.
+\end{sloppypar}
+
+\section{Denominators}
+\label{supp:denominators}
+
+The published snapshot holds 12\,425\,179 rows.  Confirmed cases are
+those with \texttt{CLASIFICACION\_FINAL} in $\{1, 2, 3\}$:
+251\,234 $+$ 14\,870 $+$
+3\,727\,360 $=$ 3\,993\,464, of which
+299\,581 record a death.  Every state-level analysis uses that
+denominator.  The municipality analyses use fewer records because a size rule
+applies; 2\,874
+confirmed cases carry no municipality code in the catalogue.
+
+\section{Registered Supplementary Analyses}
+\label{supp:preregistered}
+
+Three of the ten registered analyses use the Mexico records reported in the
+main text.  The remaining seven were specified on the two further record sets
+described in Supplement~E and are reported there with the data they used.
+
+\paragraph{S2: Mundlak within/between decomposition.}
+A logistic model with state fixed effects and within-state and between-state
+elderly covariates over 3\,993\,464
+records gives a within-state coefficient of
++2.4226
+(OR $= 11.2746$).  The
+between-state coefficient is not identified: the state means lie in the span of
+the state dummies.  \emph{Falsification:} the criterion fires, and the
+collinearity is a property of the specification rather than evidence about
+aggregation.
+
+\paragraph{S3: Expected ecological coefficient.}
+Averaging the record-level model's predicted probabilities within each state
+and regressing those averages on elderly share gives a model-implied slope of
++0.4537 against an observed slope of
++1.3105, a difference of
++0.8568 and a ratio of
+2.8883.  The state-bootstrap interval on the
+difference is [+0.4778,
++1.2851] over
+2000 draws resampled by state.  The registered agreement
+rule---observed and expected within 20\%---does not hold.
+
+\paragraph{S9: Two-stage against one-stage.}
+Three estimators on the same records: ecological regression
+($\beta = +1.3105$,
+$R^2 = 0.5041$); two-stage individual participant
+data pooled by DerSimonian--Laird
+(OR $= 11.7293$,
+$I^2 = 0.9741$); and the one-stage random-intercept
+fit reported in Supplement~D.  The ecological estimator is on the
+mortality-rate scale and the other two on the log odds scale, so the three are
+not directly comparable in magnitude.
+
+\section{Per-State Estimates, Weighting and Site Definitions}
+\label{supp:perstate}
+
+\paragraph{The covariate ladder.}
+Each row fits the named covariates at the record level, averages the predicted
+probabilities within each state, and regresses those averages on elderly share.
+
+\begin{table}[h]
+\centering
+\caption{Model-implied slope and discrepancy by record-level specification.}
+\vspace{0.5\baselineskip}
+\begin{tabular}{lrrr}
+\toprule
+Specification & Terms & Implied slope & Discrepancy \\
+\midrule
+Elderly only & 2 & +0.3319 & +0.9787 \\
+Elderly, sex, any comorbidity & 4 & +0.4537 & +0.8568 \\
+Elderly, sex, nine comorbidities & 12 & +0.4949 & +0.8156 \\
+Age bands, sex, nine comorbidities & 22 & +0.6498 & +0.6610 \\
+Age spline, sex, nine comorbidities & 15 & +0.6549 & +0.6557 \\
+Age spline, sex, nine comorbidities, month & 38 & +0.7164 & +0.5941 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Weighting and the response scale.}
+The primary fit weights each state equally.  Two alternatives are reported
+beside it: a fit weighting each state by its record count, and a
+grouped-binomial fit on the log odds scale.  The three answer different
+questions and are not on a common scale; the log odds column is not comparable
+in magnitude with the two rate-scale columns.
+
+\begin{table}[h]
+\centering
+\caption{Discrepancy by site definition, under equal-state weighting,
+record-count weighting, and a grouped-binomial fit on the log odds scale.}
+\vspace{0.5\baselineskip}
+\begin{tabular}{lrrrrrr}
+\toprule
+Site definition & Sites & Observed & Implied & Equal-state & Record-count & Log odds \\
+\midrule
+Treating unit's state & 32 & +1.3105 & +0.4537 & +0.8568 & +1.3215 & +19.302 \\
+State of residence & 32 & +1.3047 & +0.4550 & +0.8497 & +1.3124 & +19.268 \\
+Health-care sector & 11 & +1.1935 & +0.4278 & +0.7657 & +0.9617 & +8.335 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Municipality at every registered threshold.}
+
+\begin{table}[h]
+\centering
+\caption{Municipality grouping at the four registered size thresholds.}
+\vspace{0.5\baselineskip}
+\begin{tabular}{lrrrrr}
+\toprule
+Size rule & Sites & Records & Observed & Implied & Discrepancy \\
+\midrule
+$\geq 1{,}000$ records & 385 & 3\,665\,523 & +0.8928 & +0.4239 & +0.4689 \\
+$\geq 500$ records & 562 & 3\,792\,538 & +0.8352 & +0.4219 & +0.4132 \\
+$\geq 250$ records & 825 & 3\,887\,378 & +0.7956 & +0.4247 & +0.3709 \\
+No size rule & 2429 & 3\,990\,590 & +0.4795 & +0.3562 & +0.1233 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+On the 3\,665\,523 records retained by the
+$\geq 1{,}000$ rule, the paired contrast between
+385 municipalities and
+32 states of residence is
+$-0.5398$.
+
+\paragraph{Constrained random partitions.}
+Reassigning records to pseudo-sites that hold each state's size and count aged
+70 or older fixed, without using any other record field, leaves a median
+discrepancy of $+0.0005$ over
+500 replications, with a randomization interval of
+$[-0.0233,
++0.0224]$ and no deviation from either
+quota.  The expectation of that statistic is zero under this scheme, because
+the record-level model is fitted by maximum likelihood and its residuals sum to
+zero within the strata the quotas hold fixed, so the comparison is a check on
+the construction rather than evidence about geography.  Matching size alone,
+without the elderly quota, gives a median of
+$-0.0152$ with a wider interval of
+$[-0.4312,
++0.4096]$.
+
+\begingroup
+\singlespacing
+\begin{longtable}{rrrrrr}
+\caption{Per-state records, elderly share, observed and model-implied
+mortality, and their difference, under the registered three-covariate
+model.}\\
+\toprule
+State & Records & Elderly share & Observed & Implied & Difference \\
+\midrule
+\endfirsthead
+\toprule
+State & Records & Elderly share & Observed & Implied & Difference \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+1 & 39\,537 & 0.0695 & 0.0788 & 0.0783 & +0.0006 \\
+2 & 91\,278 & 0.0749 & 0.1199 & 0.0860 & +0.0340 \\
+3 & 63\,163 & 0.0370 & 0.0381 & 0.0632 & -0.0251 \\
+4 & 25\,030 & 0.0700 & 0.0826 & 0.0812 & +0.0014 \\
+5 & 102\,613 & 0.0708 & 0.0763 & 0.0718 & +0.0045 \\
+6 & 34\,054 & 0.0618 & 0.0655 & 0.0756 & -0.0102 \\
+7 & 22\,307 & 0.0790 & 0.0957 & 0.0823 & +0.0134 \\
+8 & 81\,063 & 0.0829 & 0.1080 & 0.0849 & +0.0232 \\
+9 & 1\,154\,276 & 0.0585 & 0.0458 & 0.0693 & -0.0235 \\
+10 & 50\,686 & 0.0626 & 0.0610 & 0.0692 & -0.0081 \\
+11 & 204\,282 & 0.0682 & 0.0653 & 0.0748 & -0.0095 \\
+12 & 76\,480 & 0.0822 & 0.0801 & 0.0802 & -0.0002 \\
+13 & 61\,663 & 0.0782 & 0.1262 & 0.0860 & +0.0402 \\
+14 & 166\,123 & 0.0891 & 0.1062 & 0.0885 & +0.0177 \\
+15 & 245\,313 & 0.0722 & 0.1349 & 0.0752 & +0.0597 \\
+16 & 73\,196 & 0.0895 & 0.1101 & 0.0871 & +0.0230 \\
+17 & 49\,968 & 0.0924 & 0.0984 & 0.0838 & +0.0146 \\
+18 & 34\,670 & 0.0853 & 0.0871 & 0.0825 & +0.0047 \\
+19 & 211\,101 & 0.0629 & 0.0656 & 0.0724 & -0.0068 \\
+20 & 83\,247 & 0.0744 & 0.0651 & 0.0740 & -0.0088 \\
+21 & 129\,232 & 0.0790 & 0.1219 & 0.0807 & +0.0412 \\
+22 & 101\,452 & 0.0502 & 0.0580 & 0.0690 & -0.0111 \\
+23 & 62\,324 & 0.0359 & 0.0646 & 0.0623 & +0.0023 \\
+24 & 110\,068 & 0.0727 & 0.0619 & 0.0776 & -0.0158 \\
+25 & 75\,629 & 0.0932 & 0.1196 & 0.0872 & +0.0324 \\
+26 & 124\,098 & 0.0755 & 0.0746 & 0.0801 & -0.0055 \\
+27 & 146\,002 & 0.0500 & 0.0406 & 0.0677 & -0.0271 \\
+28 & 105\,769 & 0.0645 & 0.0697 & 0.0753 & -0.0057 \\
+29 & 27\,143 & 0.0725 & 0.1036 & 0.0756 & +0.0281 \\
+30 & 121\,775 & 0.0846 & 0.1216 & 0.0840 & +0.0376 \\
+31 & 76\,590 & 0.0694 & 0.0766 & 0.0734 & +0.0032 \\
+32 & 43\,332 & 0.0840 & 0.0782 & 0.0833 & -0.0051 \\
+\end{longtable}
+\endgroup
+
+\section{State-Level Model Diagnostics}
+\label{supp:glmm}
+
+The state-level model is a logistic random-intercept fit over
+152\,919 cells with the registered covariates, the centered
+age spline, and the state's elderly share entered as a contextual term.  It was
+fitted by \texttt{lme4::glmer} at 15
+adaptive Gauss--Hermite quadrature nodes in
+2.63 hours.  The elderly share carries an odds ratio of
+1.1817 per standard deviation, with a profile interval of
+[1.0719, 1.3027] and a Wald interval of
+[1.0750, 1.2989].  The random-intercept
+standard deviation is 0.2682.
+
+A second implementation written separately, using adaptive Gauss--Hermite
+quadrature in Python, reproduces the fit: the largest absolute coefficient
+difference is $7.65 \times 10^{-5}$ against a
+tolerance of $1 \times 10^{-4}$, and the two random-intercept standard
+deviations are 0.2682 and 0.2682.  The
+relative gradient at the optimum is
+$3.38 \times 10^{-7}$.
+
+The result is reported only if eleven acceptance criteria hold.  All eleven hold.
+
+\begin{table}[h]
+\centering
+\caption{Acceptance criteria for the state-level model.  A result failing any
+one of these is reported as not evaluable rather than as an estimate.}
+\vspace{0.5\baselineskip}
+\begin{tabular}{lr}
+\toprule
+Criterion & Outcome \\
+\midrule
+Covariates are the registered ones & pass \\
+The optimizer reports convergence & pass \\
+Term order matches the registered design & pass \\
+Variance component is off the boundary & pass \\
+The estimate is finite & pass \\
+A second implementation reproduces it & pass \\
+The Hessian is positive definite & pass \\
+The Hessian agrees across step sizes & pass \\
+The Hessian is well conditioned & pass \\
+The gradient vanishes at the optimum & pass \\
+A profile interval is available & pass \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+An earlier validation run checked the same Python implementation against
+\texttt{lme4} on a reduced design: the log odds agree to
+$8.9 \times 10^{-8}$ and the standard
+errors to $4.14 \times 10^{-8}$, against a
+tolerance of $1 \times 10^{-4}$.
+
+\section{Two Further Record Sets}
+\label{supp:other}
+
+Seven of the ten registered supplementary analyses were specified on two record
+sets that are not part of the analysis reported in the main text: United States
+case surveillance published by the Centers for Disease Control and Prevention
+(\texttt{data.cdc.gov}, dataset \texttt{vbim-akqf}), grouped by race and
+ethnicity into pseudo-sites, and the 4CE consortium's aggregate neurological
+data.  They are reported here because they were registered, and the main text
+draws no conclusion from them.  Their results are in
+\texttt{paper/analyses/results/} under \texttt{s1}, \texttt{s4} through
+\texttt{s8}, and \texttt{s10}.
+
+\end{document}
